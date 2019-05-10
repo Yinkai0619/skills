@@ -10,4 +10,4 @@
 杨辉三角                triangle            No
 排序                    None                Undone
     冒泡排序            None                Undone
-判断数字                DetermineNums       No
+判断数字                DetermineNums       Done
