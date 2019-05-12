@@ -8,6 +8,8 @@
 计算素数                primes              Done
 猴子吃桃问题            None                Undone
 杨辉三角                triangle            No
-排序                    None                Undone
-    冒泡排序            None                Undone
+排序                    sort                Undone
+    冒泡排序            sort/bubble_sort    Done
+    选择排序            None                Undone
+    插入排序            None                Undone
 判断数字                DetermineNums       Done
