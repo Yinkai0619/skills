@@ -11,5 +11,5 @@
 排序                    sort                Undone
     冒泡排序            sort/bubble_sort    Done
     选择排序            None                Undone
-    插入排序            None                Undone
+    插入排序            sort/insert_sort    Undone
 判断数字                DetermineNums       Done
