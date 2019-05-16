@@ -15,5 +15,5 @@ def sort( lst,fn = lambda a,b : a > b ):
             result.append(x)
     return result
 
-print(sort(l1, lambda a,b : a < b ))
+print(sort(l1, lambda x,y : x < y ))
 print(sort(l1))
