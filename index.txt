@@ -4,7 +4,7 @@
 打印菱形                rhombus             Done
 打印三角形              None                Undone
 闪电打印                lightning           Done
-斐波那契数列            None                Undone
+斐波那契数列            Fibonacci           Done
 计算素数                primes              Done
 猴子吃桃问题            None                Undone
 杨辉三角                triangle            No
@@ -13,3 +13,4 @@
     选择排序            None                Undone
     插入排序            sort/insert_sort    Undone
 判断数字                DetermineNums       Done
+实现 Linux 的ls 命令     None                No
