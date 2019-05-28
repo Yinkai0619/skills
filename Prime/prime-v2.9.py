@@ -36,7 +36,7 @@ for _ in range(loop):
     for x in range(3, upper_limit, 2):
         if x > 10 and not x % 5:    # 所有大于10的质数中，个位数只有1,3,7,9。意思为能被5整除的数字为合数，不再计算
             continue
-        for i in range(3, int(x**0.5) + 1, 2):  # 取模数量减半，并过滤掉偶数
+        for i in range(3, int(x**0.5) + 1, 2):  # 使用试除法测试，用被测试数值除以被测试数值平方根以内的数（并排除偶数）
             if not x % i:   # 不是素数退出循环
                 # print(num, "is a composite number.")
                 break
