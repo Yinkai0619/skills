@@ -12,12 +12,23 @@ import random
 
 strs = string.ascii_lowercase
 
-def string_print(strs=strs):
+def gen_string(strs=strs):
     alpha_dict = dict()
+    ds = {}
+    counter = {}
     for i in range(len(strs)):
-        alpha_dict.setdefault(strs[i],i)
-    return alpha_dict
+        alpha_dict.setdefault(i,strs[i])
 
+    for j in range(100):
+        s1 = alpha_dict[random.randint(0,len(alpha_dict.items())-1)]
+        s2 = alpha_dict[random.randint(0,len(alpha_dict.items())-1)]
+        ds.setdefault(s1+s2,j)
 
+    for c in ds:
+        counter[c] = counter.get(c,0) + 1
 
-print(string_print())
+    print(ds)
+    print(*sorted(counter.items(),reverse=True))
+
+# print(gen_string())
+gen_string()
