@@ -1,3 +1,5 @@
+#/usr/bin/env python
+
 import random
 import string
 
@@ -7,17 +9,7 @@ import string
     前部分为4位数的整数，后半部分为10为随机字母，中间用“.”分割。
 '''
 
-# s1 = string.ascii_lowercase
-s2 = list(string.ascii_lowercase)
+[ "{:0>4d}.{}".format(x,''.join([random.choice(bytes(range(97,123)).decode()) for _ in range(10)]))  for x in range(1,101)]
 
-# print(s2)
+[ "{:0>4d}.{}".format(x,''.join(random.choices(bytes(range(97,123)).decode(),k=10))) for x in range(1,101)]
 
-for x in range(1,101):
-    random.shuffle(s2)
-    s3 = ''
-    for i in range(10):
-        s3 += s2[i]
-    print('{:0>4d}.{}'.format(x,s3))
-
-
-# [ for x in range(1,101) for i in range(10) random.shuffle(list(string.ascii_lowercase))]
