@@ -3,9 +3,9 @@
 杨辉三角补0法
 '''
 
-triangle = [[1],[1,1]]
+triangle = [[1]]
 n = 6
-for i in range(2,n):
+for i in range(1,n):
     pre = triangle[i-1] + [0]
     cur = []
     for j in range(i+1):    # 计算当前行

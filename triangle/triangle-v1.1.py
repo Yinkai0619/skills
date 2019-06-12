@@ -1,23 +1,19 @@
 #!/usr/bin/env python
 
-# triangle = [[1],[1,1]]  # 定义前两行
-# n = 6
-# for i in range(2,n):  # 后四行
-#     pre = triangle[i-1]     # 前一行
-#     cur = [1]       #当前行
-#     for j in range(0,i-1):
-#         cur.append(pre[j] + pre[j + 1])
-#     cur.append(1)
-#     triangle.append(cur)
-# print(triangle)
+#!/usr/bin/env python
 
-triangle = []
+'''
+杨辉三角基本解法
+'''
+
+
+triangle = [[1]]
 n = 6
-for i in range(n):
+for i in range(1,n):
+    pre = triangle[i-1]
     cur = [1]
+    for j in range(i-1):  # 计算中间值
+        cur.append(pre[j] + pre[j + 1])
+    cur.append(1)
     triangle.append(cur)
-    if i == 0:
-        continue
-    pre = triangle(i-1)
-    for j in range(len())
-
+print(triangle)
