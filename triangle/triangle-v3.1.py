@@ -7,12 +7,13 @@ triangle = [[1], [1, 1]]
 n = 6
 for i in range(2, n):
     pre = triangle[-1]
-    cur = [1]
-    for j in range(i):  # 2,3
-        cur.append(1 if j == i - 1 else 0)
+    cur = [1] * (i + 1)
 
-    for j in range(i-1):
-        cur[j + 1] = pre[j] + pre[j + 1]
+    for j in range(i // 2):
+        val = pre[j] + pre[j + 1]
+        cur[j + 1] = val
+        if i != 2j:
+            cur[-j-2] = val
 
     triangle.append(cur)
 
