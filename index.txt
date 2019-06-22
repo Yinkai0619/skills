@@ -8,8 +8,8 @@
 计算素数                Prime                        Done
 猴子吃桃问题            monkeys_eat_peach            Done
 杨辉三角                triangle                     No
-排序                    sort                         Undone
-    冒泡排序            sort/bubble_sort             Done
+排序                   Sorts                        Undone
+    冒泡排序            Sort/Exchange_sorts/bubble_sort Done
     选择排序            None                         Undone
     插入排序            sort/insert_sort             Undone
 判断数字                DetermineNums                Done
@@ -18,3 +18,4 @@
 实现 Linux 的ls 命令    None                         No
 转置矩阵                Matrix                       Done
 生成半随机ID            id                           Undone
+作业                    homework                    Undone

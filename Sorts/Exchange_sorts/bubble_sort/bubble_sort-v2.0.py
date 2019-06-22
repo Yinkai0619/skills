@@ -11,7 +11,7 @@ print("Initial:\t", c_list, "\n========================================")
 length = len(c_list)
 count_swap = 0
 count = 0
-flag = False
+flag = False    # 交换标记。如果某i次比较后没有发生交换，侧说明已经符合最终结果，无需再进行后续排序，退出排序过程。
 for i in range(length - 1):
     # print("{},{}".format(c_list[i],c_list[i+1]))
     if flag:
