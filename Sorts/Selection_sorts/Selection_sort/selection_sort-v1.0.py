@@ -7,7 +7,7 @@ Blog: https://blog.51cto.com/yinkai
 
 Date: 2019/6/24 下午9:40
 '''
-
+# 一元选择排序，也称为简单选择排序
 
 import random
 
