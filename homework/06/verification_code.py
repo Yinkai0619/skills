@@ -24,62 +24,53 @@ F (182, 136, 237)
 要求生成 png 或者jpg 格式的图片，关于如何生成图片 请搜索下python PIL生成图片
 '''
 
+import random
+import string
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-def generate_verification_code(n=5):
-    '''
-    定义验证码生成器，生成n个验证吗
-    :param n:
-    :return: code
-    '''
-    import random
-    import string
+# 验证码生成器
+def verification_code_generator():
+    code = []
+    def random_num():
+        return chr(random.randint(48, 57))
 
+    def random_char():
+        return chr(random.randint(65, 90))
+
+    n = random.randint(1, 5)    # 字母和数字的数量随机匹配
     for i in range(n):
-        code = random.sample(string.ascii_lowercase, 2) + random.sample(string.ascii_uppercase, 2) + random.sample(string.digits, 2)
-        random.shuffle(code)
-        code = ''.join(code)
-        yield code
+        code.append(random_char())
+    for i in range(6 - n):
+        code.append(random_num())
+    random.shuffle(code)        # 随机打乱验证顺序
+    return ''.join(code)
 
-def set_color(string):  #随机挑选一种颜色对字符进行着色，背景色使用黑色
-    '''
-    格式： 开头部分：\033[显示方式; 前景色; 背景色m + str + 结尾部分：\033[0m
-    前景色            背景色           颜色
-    ---------------------------------------
-    30                40              黑色
-    31                41              红色
-    32                42              绿色
-    33                43              黃色
-    34                44              蓝色
-    35                45              紫红色
-    36                46              青蓝色
-    37                47              白色
+# 随机颜色
+def random_color():
+    return (random.randint(64, 255), random.randint(64, 255), random.randint(64, 255))
+
+# 定义验证码字体
+font = ImageFont.truetype('arial.ttf', 36)
+
+# 定义验证码大小
+width = 60 * 6
+height = 60
 
 
-    显示方式           意义
-    -------------------------
-    0                终端默认设置
-    1                高亮显示
-    4                使用下划线
-    5                闪烁
-    7                反白显示
-    8                不可见
-    '''
-    import random
+for _ in range(5):  # 验证码数量
+    image = Image.new('RGB', (width, height), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
+    for x in range(width):  # 使用随机颜色填充验证码背景
+        for y in range(height):
+            draw.point((x, y), fill=random_color())
 
-    length = len(string)
-    color_str = ''
-    color_num = 38 - 31
-    if length <= color_num:    #定义颜色列表，排除黑色。 当字符数量超出颜色数量时重复使用颜色
-        color_id = random.sample((range(31, 38)), length)
-    else:
-        color_id = list(range(31, 38))
-        random.shuffle(color_id)
-        color_id = color_id * (length // (len(color_id) - 1))
+    code = verification_code_generator()
+    print(code)
+    length = len(code)
 
-    for i in range(length):
-        color_str += "\033[0;{c};40m{s}\033[0m".format(c = color_id[i], s = string[i])
-    return color_str
+    for i in range(length):     # 对验证号每位字符随机着色
+        draw.text((60 * i + 20, 10), code[i], fill=random_color(), font=font)
 
-verification_code = generate_verification_code(100)
-for code in verification_code:
-    print(set_color(code))
+    image.save('verification_codes/code_{}.jpg'.format(code), 'jpeg')
+    # image.show()
+    image.close()
