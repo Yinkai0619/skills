@@ -2,11 +2,12 @@
 |-------任务-------|--------目录--------|--------完成情况--------|--------备注--------|
 九九乘法表              multiplication               Done
 打印菱形                rhombus                      Done
-打印三角形              None                         Undone
+打印三角形               None                         Undone
 闪电打印                lightning                    Done
 斐波那契数列            Fibonacci                    Done
 计算素数                Prime                        Done
 猴子吃桃问题            monkeys_eat_peach            Done
+转换数据                revert                      Done
 杨辉三角                triangle                     No
 排序                   Sorts                        Undone
     冒泡排序            Sort/Exchange_sorts/bubble_sort Done
@@ -18,4 +19,5 @@
 实现 Linux 的ls 命令    None                         No
 转置矩阵                Matrix                       Done
 生成半随机ID            id                           Undone
+阶乘                    factorial                   Undone
 作业                    homework                    Undone
