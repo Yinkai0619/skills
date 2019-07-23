@@ -23,13 +23,19 @@ import json
 # users = dict(tom={'password': 'tom0PASS', 'mobile': '13000000001', 'balance': 5000, },
 #                jerry={'password': 'jerry0PASS', 'mobile': '13000000002', 'balance': 5000, })
 
+# 获取用户信息
+def get_users(user_db_file):
+    result = None
+    try:
+        with open(user_db_file, 'r') as data_file:
+            result = json.load(data_file)
+    except:
+        # print('File error.')
+        result = 'File error.'
+    return result
 
-try:
-    with open('user_db.json', 'r') as data_file:
-        user_db = json.load(data_file)
-except:
-    print('File error.')
-
+user_db = get_users('user_db.json')
+print(user_db)
 
 # 打印菜单：
 def print_menu():
@@ -45,21 +51,6 @@ def print_menu():
                                                                            'Change Password(C)', 'Quit(Q)', 'Help(H)')
     print(menu)
 
-# 用户认证:
-def auth_user(username, password, usdb=user_db):
-    result = False
-    res_mess = None
-
-    if username in usdb.keys():
-        if password == usdb[username]['password']:
-            result = True
-            res_mess = '{} login Success'.format(username)
-        else:
-            res_mess = 'Password error!'
-    else:
-        res_mess = "Fileld: {} doesn't exist!".format(username)
-
-    return result, res_mess
 
 # 用户注册:
 def sign_in(username, usdb):
@@ -79,12 +70,47 @@ def sign_in(username, usdb):
                 continue
     return result
 
+
+# 获取一级菜单命令
+def get_first_command():
+    cmd_list = dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)')
+    # print('{}\t{}\t{}\n'.format('Login(L)', 'Sign in(S)', 'Quit(Q)'))
+    print('\t'.join(cmd_list.values()))
+    cmd = input('Command: ').lower()
+    return cmd if str(cmd) in cmd_list.keys() else 'Input Error!'
+
+
+# 用户登录并认证:
+def login():    # TODO: Undone
+    def auth_user(username, password, usdb=user_db):
+        result = False
+        res_mess = None
+
+        if username in usdb.keys():
+            if password == usdb[username]['password']:
+                result = True
+                res_mess = '{} login Success'.format(username)
+            else:
+                res_mess = 'Password error!'
+        else:
+            res_mess = "Fileld: {} doesn't exist!".format(username)
+
+        return result, res_mess
+    for i in range(3):
+        current_user = input('Please enter your username: ')
+        current_pass = getpass.getpass('Please enter your password: ')
+        login_state, login_message = auth_user(current_user, current_pass)
+
+# 获取二级菜单命令
+def get_second_command():
+    pass
+
+
 # 主程序
 os.system('clear')
 print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
 while True:
-    print('{}\t{}\t{}\n'.format('Login(L)', 'Sign in(S)', 'Quit(Q)'))
-    cmd1 = input('Command: ').lower()
+    cmd1 = get_first_command()
     if cmd1 == 'l':  # 进入用户登陆界面
         # (1)登陆验证：用户输入用户名密码登陆，检测用户名是否存在以及用户名密码是否匹配；用户名密码各有三次输入机会，超过三次系统退出。
         quit_flag = False
@@ -190,4 +216,4 @@ while True:
             print('File error.')
         break
     else:
-        print('Input Error!')
+        print(cmd1)
