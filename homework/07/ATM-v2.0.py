@@ -74,32 +74,36 @@ def sign_in(username, usdb):
 # 获取一级菜单命令
 def get_first_command():
     cmd_list = dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)')
-    # print('{}\t{}\t{}\n'.format('Login(L)', 'Sign in(S)', 'Quit(Q)'))
+    print()
     print('\t'.join(cmd_list.values()))
     cmd = input('Command: ').lower()
     return cmd if str(cmd) in cmd_list.keys() else 'Input Error!'
 
 
 # 用户登录并认证:
-def login():    # TODO: Undone
+def login():
+    '''
+    完成用户认证：如果认证成功则返回用户名
+    :return: username or None
+    '''
     def auth_user(username, password, usdb=user_db):
-        result = False
-        res_mess = None
-
         if username in usdb.keys():
-            if password == usdb[username]['password']:
-                result = True
-                res_mess = '{} login Success'.format(username)
-            else:
-                res_mess = 'Password error!'
+            return True if password == usdb[username]['password'] else False
         else:
             res_mess = "Fileld: {} doesn't exist!".format(username)
+            return False
 
-        return result, res_mess
     for i in range(3):
         current_user = input('Please enter your username: ')
         current_pass = getpass.getpass('Please enter your password: ')
-        login_state, login_message = auth_user(current_user, current_pass)
+        login_state = auth_user(current_user, current_pass)
+        if login_state:  # 用户认证通过
+            print('INFO: \n\t{} login Success!'.format(current_user))
+            return current_user
+        else:
+            print('INFO: \n\tAccess denied. \n\t{} more chances!\n'.format(2 - i))
+    else:
+        print("Too many authentication failures.")
 
 # 获取二级菜单命令
 def get_second_command():
@@ -109,6 +113,21 @@ def get_second_command():
 # 主程序
 os.system('clear')
 print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
+while True:
+    cmd1 = get_first_command()
+    if cmd1 == 'l':  # 进入用户登陆界面
+        print(login())
+    elif cmd1 == 'q':  # 即出系统
+        try:
+            with open('user_db.json', 'w') as data:
+                json.dump(user_db, data)
+        except:
+            print('File error.')
+        break
+
+
+'''
+
 while True:
     cmd1 = get_first_command()
     if cmd1 == 'l':  # 进入用户登陆界面
@@ -217,3 +236,4 @@ while True:
         break
     else:
         print(cmd1)
+'''
