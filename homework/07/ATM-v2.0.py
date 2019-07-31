@@ -37,38 +37,32 @@ def get_users(user_db_file):
 user_db = get_users('user_db.json')
 print(user_db)
 
+# 保存用户数据
+def save_users(user_db_file: str = 'user_db.json', user_info = user_db):
+    try:
+        with open(user_db_file, 'w') as data:
+            json.dump(user_info, data)
+    except:
+        print('File error.')
+
+
 # 打印菜单：
-def print_menu():
+def print_menu():   # TODO: Undone
     # 菜单功能：
     #     B: 查询余额
     #     D: 存款-Deposits
     #     W: 取款-Withdrawals
     #     T: 转账
     #     C: 修改密码
+    #     O: 注销账号
     #     Q: 退出
     menu = '\n\n|{:-^30s}|\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n'.format('MENU', 'Query Balance(B)', 'Deposits(D)',
                                                                            'Draw money(R)', 'Transfer(T)',
-                                                                           'Change Password(C)', 'Quit(Q)', 'Help(H)')
+                                                                           'Change Password(C)', 'Quit(Q)', 'Delete account(D)', 'Help(H)')
+    menu_list = dict(b='Balance inquiry(B)',  d='Deposits(D)', r='Draw money(R)', t='Transfer(T)',           )
     print(menu)
 
 
-# 用户注册:
-def sign_in(username, usdb):
-    result = None
-    if username in usdb.keys():  # 判断用是否已经存在
-        print('{} exists!'.format(username))
-    else:  # 用户名不重复
-        while True:  # 输入合法信息
-            pass1 = getpass.getpass('Please input your password: ')
-            pass2 = getpass.getpass('Retype input password: ')
-            if pass1 == pass2:
-                mobile = input('Please input your mobile: ')
-                result = {username: {'password': pass2, 'mobile': mobile, 'balance': 5000}}
-                break
-            else:
-                print('Different inputs!')
-                continue
-    return result
 
 
 # 获取一级菜单命令
@@ -80,7 +74,7 @@ def get_first_command():
     return cmd if str(cmd) in cmd_list.keys() else 'Input Error!'
 
 
-# 用户登录并认证:
+# 用户登录并认证
 def login():
     '''
     完成用户认证：如果认证成功则返回用户名
@@ -110,20 +104,62 @@ def get_second_command():
     pass
 
 
+# 用户注册
+def sign_in(usdb: dict = user_db) -> str:
+    '''
+    实现用户注册功能
+    :param usdb:
+    :return: 新用户名
+    '''
+    register_status = False
+    while not register_status:  # 如果用户名重复刚重新输入
+        username = input('Please input your name or "q" to Quit: ').lower()
+        if username == 'q': return None
+        if username in usdb.keys():  # 判断用是否已经存在
+            print('{} exists!'.format(username))
+        else:  # 用户名不重复
+            while True:  # 输入合法信息
+                pass1 = getpass.getpass('Please input your password: ')
+                pass2 = getpass.getpass('Retype input password: ')
+                if pass1 == pass2:
+                    mobile = input('Please input your mobile: ')
+                    new_user_info = {username: {'password': pass2, 'mobile': mobile, 'balance': 5000}}
+                    usdb.update(new_user_info)
+                    register_status = True
+                    break
+                else:
+                    print('Different inputs!')
+
+    return username
+
+# 业务处理
+def business_analyst():
+    pass
+
 # 主程序
-os.system('clear')
-print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
+# os.system('clear')
+# print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
 while True:
     cmd1 = get_first_command()
     if cmd1 == 'l':  # 进入用户登陆界面
-        print(login())
+        user = login()
+        print(user)
+
+    elif cmd1 == 's':  # 进入用户注册界面
+        new_user = sign_in()
+        if new_user in user_db.keys():
+            print('{} Registered successfully!'.format(new_user))
+            print(
+                'Account Info: \n\tAccount: {user}\n\tMobile: {mobile}\n\tBalance: {balance:.2f} [USD]\n\n'.format(
+                    user=new_user, mobile=user_db[new_user]['mobile'],
+                    balance=user_db[new_user]['balance']))
+        else:
+            print('Registered failed!')
     elif cmd1 == 'q':  # 即出系统
-        try:
-            with open('user_db.json', 'w') as data:
-                json.dump(user_db, data)
-        except:
-            print('File error.')
+        save_users()
         break
+    else:
+        print('Input Error!')
 
 
 '''
