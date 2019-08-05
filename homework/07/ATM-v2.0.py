@@ -19,6 +19,7 @@ Date: 2019/7/10 下午7:39
 import getpass
 import os
 import json
+import collections
 
 # users = dict(tom={'password': 'tom0PASS', 'mobile': '13000000001', 'balance': 5000, },
 #                jerry={'password': 'jerry0PASS', 'mobile': '13000000002', 'balance': 5000, })
@@ -35,7 +36,7 @@ def get_users(user_db_file):
     return result
 
 user_db = get_users('user_db.json')
-print(user_db)
+# print(user_db)
 
 # 保存用户数据
 def save_users(user_db_file: str = 'user_db.json', user_info = user_db):
@@ -50,24 +51,32 @@ def save_users(user_db_file: str = 'user_db.json', user_info = user_db):
 def print_menu():   # TODO: Undone
     # 菜单功能：
     #     B: 查询余额
-    #     D: 存款-Deposits
-    #     W: 取款-Withdrawals
+    #     D: 存款
+    #     R: 取款
     #     T: 转账
-    #     C: 修改密码
-    #     O: 注销账号
-    #     Q: 退出
-    menu = '\n\n|{:-^30s}|\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n'.format('MENU', 'Query Balance(B)', 'Deposits(D)',
-                                                                           'Draw money(R)', 'Transfer(T)',
-                                                                           'Change Password(C)', 'Quit(Q)', 'Delete account(D)', 'Help(H)')
-    menu_list = dict(b='Balance inquiry(B)',  d='Deposits(D)', r='Draw money(R)', t='Transfer(T)',           )
-    print(menu)
+    #     S: 设置
+    #       C: 修改密码
+    #       U: 注销账号
+    #     O: 退出
+    # menu = '\n\n|{:-^30s}|\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n'.format('MENU', 'Query Balance(B)', 'Deposits(D)',
+    #                                                                        'Draw money(R)', 'Transfer(T)',
+    #                                                                        'Change Password(C)', 'Quit(Q)', 'Delete account(D)', 'Help(H)')
+    menu = collections.OrderedDict(dict(b='Balance inquiry(B)',  d='Deposits(D)', r='Draw money(R)', t='Transfer(T)', s='Settings(S)', o='Sign out(O)', h='Help(H)'))
+    menu_settings = collections.OrderedDict(dict(c='Change Password(C)', u='Delete account(D)'))
+
+    print('{:=^30}'.format('Menu'))
+    print('\n'.join(menu.values()))
+    # print('\n'.join(menu_settings.values()))
+    print('=' * 30)
+
+def get_cmd():
 
 
 
 
 # 获取一级菜单命令
 def get_first_command():
-    cmd_list = dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)')
+    cmd_list = collections.OrderedDict(dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)'))
     print()
     print('\t'.join(cmd_list.values()))
     cmd = input('Command: ').lower()
@@ -144,6 +153,7 @@ while True:
     if cmd1 == 'l':  # 进入用户登陆界面
         user = login()
         print(user)
+        print_menu()
 
     elif cmd1 == 's':  # 进入用户注册界面
         new_user = sign_in()
