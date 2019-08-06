@@ -20,6 +20,7 @@ import getpass
 import os
 import json
 import collections
+from functools import wraps
 
 # users = dict(tom={'password': 'tom0PASS', 'mobile': '13000000001', 'balance': 5000, },
 #                jerry={'password': 'jerry0PASS', 'mobile': '13000000002', 'balance': 5000, })
@@ -46,41 +47,74 @@ def save_users(user_db_file: str = 'user_db.json', user_info = user_db):
     except:
         print('File error.')
 
+def get_cmd(fn):
+    '''
+    Get command.
 
-# 打印菜单：
-def print_menu():   # TODO: Undone
-    # 菜单功能：
-    #     B: 查询余额
-    #     D: 存款
-    #     R: 取款
-    #     T: 转账
-    #     S: 设置
-    #       C: 修改密码
-    #       U: 注销账号
-    #     O: 退出
-    # menu = '\n\n|{:-^30s}|\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n{:s}\n'.format('MENU', 'Query Balance(B)', 'Deposits(D)',
-    #                                                                        'Draw money(R)', 'Transfer(T)',
-    #                                                                        'Change Password(C)', 'Quit(Q)', 'Delete account(D)', 'Help(H)')
-    menu = collections.OrderedDict(dict(b='Balance inquiry(B)',  d='Deposits(D)', r='Draw money(R)', t='Transfer(T)', s='Settings(S)', o='Sign out(O)', h='Help(H)'))
-    menu_settings = collections.OrderedDict(dict(c='Change Password(C)', u='Delete account(D)'))
+    :param fn:
+    :return:
+    '''
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        '''
+        wrapper function.
 
-    print('{:=^30}'.format('Menu'))
-    print('\n'.join(menu.values()))
-    # print('\n'.join(menu_settings.values()))
-    print('=' * 30)
+        :param args:
+        :param kwargs:
+        :return: command
+        '''
+        cmd_list = fn(*args, **kwargs)
+        if not cmd_list:
+            return 'Invalid argument.'
+        cmd = str(input('Command: ')).lower()
+        return cmd if cmd in cmd_list else 'Input Error!'
+    return wrapper
 
-def get_cmd():
+# 打印功能菜单：
+@get_cmd    # menus = get_cmd(menus)(menu_item) = wrapper(menu_item) = menus(menu_item)
+def menus(menu_item):
+    '''
+    All menu
 
+    :param menu_item: index, feature
+    :return: command list for menu
+    '''
+    def feature_menu():
+        '''
+            Feature Menu
 
+            :return:
+            '''
+        f_menu = collections.OrderedDict(
+            dict(b='Balance inquiry(B)', d='Deposits(D)', r='Draw money(R)', t='Transfer(T)', s='Settings(S)',
+                 o='Sign out(O)',
+                 h='Help(H)'))
+        menu_settings = collections.OrderedDict(dict(c='Change Password(C)', u='Delete account(D)'))
+        print('{:=^30}'.format('Menu'))
+        print('\n'.join(f_menu.values()))
+        # print('\n'.join(menu_settings.values()))
+        print('=' * 30)
+        return f_menu.keys()
 
+    # 获取一级菜单命令
+    def index_menu():
+        '''
+            First menu
 
-# 获取一级菜单命令
-def get_first_command():
-    cmd_list = collections.OrderedDict(dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)'))
-    print()
-    print('\t'.join(cmd_list.values()))
-    cmd = input('Command: ').lower()
-    return cmd if str(cmd) in cmd_list.keys() else 'Input Error!'
+            :return: first menu command
+            '''
+        i_menu = collections.OrderedDict(dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)'))
+        print()
+        print('\t'.join(i_menu.values()))
+        return i_menu.keys()
+
+    if menu_item == 'index':
+        result = index_menu()
+    elif menu_item == 'feature':
+        result = feature_menu()
+    else:
+        return None
+    return result
 
 
 # 用户登录并认证
@@ -101,16 +135,12 @@ def login():
         current_pass = getpass.getpass('Please enter your password: ')
         login_state = auth_user(current_user, current_pass)
         if login_state:  # 用户认证通过
-            print('INFO: \n\t{} login Success!'.format(current_user))
+            print('INFO: \n\t{} login Success!\n'.format(current_user))
             return current_user
         else:
             print('INFO: \n\tAccess denied. \n\t{} more chances!\n'.format(2 - i))
     else:
         print("Too many authentication failures.")
-
-# 获取二级菜单命令
-def get_second_command():
-    pass
 
 
 # 用户注册
@@ -149,12 +179,12 @@ def business_analyst():
 # os.system('clear')
 # print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
 while True:
-    cmd1 = get_first_command()
+    # cmd1 = get_first_command()
+    cmd1 = menus('index')
     if cmd1 == 'l':  # 进入用户登陆界面
         user = login()
-        print(user)
-        print_menu()
-
+        cmd2 = menus('feature')
+        print(cmd2)
     elif cmd1 == 's':  # 进入用户注册界面
         new_user = sign_in()
         if new_user in user_db.keys():
@@ -172,114 +202,3 @@ while True:
         print('Input Error!')
 
 
-'''
-
-while True:
-    cmd1 = get_first_command()
-    if cmd1 == 'l':  # 进入用户登陆界面
-        # (1)登陆验证：用户输入用户名密码登陆，检测用户名是否存在以及用户名密码是否匹配；用户名密码各有三次输入机会，超过三次系统退出。
-        quit_flag = False
-        for i in range(3):
-            if quit_flag:
-                break
-            current_user = input('Please enter your username: ')
-            current_pass = getpass.getpass('Please enter your password: ')
-            login_state, login_message = auth_user(current_user, current_pass)
-            if login_state:  # 用户认证通过
-                print('INFO: \n\t', login_message)
-                print('\tThe current user: {}'.format(current_user))
-                print_menu()
-                while True:
-                    cmd = input('Please enter command or "h" for Help: ').lower()
-                    if cmd == 'q':
-                        quit_flag = True
-                        break
-                    elif cmd == 'b':  # 打印余额
-                        print('INFO: \n\tBalance: {:.2f} [USD]\n'.format(user_db[current_user]['balance']))
-                        continue
-                    elif cmd == 'd':  # 存款
-                        try:
-                            deposit = abs(int(input('Amount of deposit: ')))
-                            user_db[current_user]['balance'] += deposit
-                            print('INFO: \n\tExecute completes. \n\tThe current balance: {:.2f} [USD]\n'.format(
-                                user_db[current_user]['balance']))
-                        except:
-                            print('Invalid input!')
-                        continue
-                    elif cmd == 'r':  # 取款
-                        try:
-                            cash = abs(int(input('Withdrawal amount: ')))
-                            user_db[current_user]['balance'] -= cash
-                            print('INFO: \n\tExecute completes. \n\tThe current balance: {:.2f} [USD]\n'.format(
-                                user_db[current_user]['balance']))
-                        except:
-                            print('FAILED: \n\tInvalid input!\n')
-                        continue
-                    elif cmd == 't':  # 转账
-                        receiver = input('Receiver: ')
-                        try:
-                            amount = abs(int(input('Amount: ')))
-                        except:
-                            print('FAILED: \n\tInvalid input!\n')
-                            continue
-                        if receiver in user_db.keys():
-                            user_db[receiver]['balance'] += amount
-                            user_db[current_user]['balance'] -= amount
-                            print('INFO: \n\tTransfer to complete!',
-                                  '\n\tThe current balance: {:.2f} [USD]\n'.format(user_db[current_user]['balance']))
-                        else:  # 收款人不存在
-                            print('FAILED: \n\tReceiver dose not exist.\n')
-                        continue
-                    elif cmd == 'c':  # 修改密码
-                        print('Changing password for account {}.'.format(current_user))
-                        if getpass.getpass('Please input current password for {}: '.format(current_user)) == \
-                                user_db[current_user]['password']:  # 验证当前密码
-                            for _ in range(2):  # 尝试两次
-                                new_pass1 = getpass.getpass('New password: ')
-                                new_pass2 = getpass.getpass('Retype new password: ')
-                                if new_pass1 == new_pass2:  # 两次密码是否输入一致
-                                    user_db[current_user]['password'] = new_pass2
-                                    print('INFO: \n\tThe password updated successfully.\n')
-                                    break
-                                else:
-                                    print('FAILED: \n\tSorry, password do not match.')
-                        else:  # 当前密码错误
-                            print('FAILED: \n\tManipulation error.')
-                        continue
-                    elif cmd == 'h':
-                        print_menu()
-                        continue
-                    else:
-                        print('Error command!')
-            else:
-                print('INFO: ', '\n', login_message, '\n{} more chances!\n'.format(2 - i))
-        else:
-            print('INFO: ', 'Login incorrect!')
-    elif cmd1 == 's':  # 进入用户注册界面
-        while True:  # 如果用户名重复刚重新输入
-            reg_username = input('Please input your name or "q" to Quit: ').lower()
-            if reg_username == 'q': break
-            sign_result = sign_in(reg_username, user_db)
-            if not sign_result:
-                continue
-            user_db.update(sign_result)
-            if reg_username in user_db.keys():
-                print('{} Registered successfully!'.format(reg_username))
-                print(
-                    'Account Info: \n\tAccount: {user}\n\tMobile: {mobile}\n\tBalance: {balance:.2f} [USD]\n\n'.format(
-                        user=reg_username, mobile=user_db[reg_username]['mobile'],
-                        balance=user_db[reg_username]['balance']))
-                break
-            else:
-                print('{} Registered failed!'.format(reg_username))
-        continue
-    elif cmd1 == 'q':  # 即出系统
-        try:
-            with open('user_db.json', 'w') as data:
-                json.dump(user_db, data)
-        except:
-            print('File error.')
-        break
-    else:
-        print(cmd1)
-'''
