@@ -22,7 +22,7 @@ import json
 import collections
 from functools import wraps
 
-# users = dict(tom={'password': 'tom0PASS', 'mobile': '13000000001', 'balance': 5000, },
+# users = dict(tom={C:\Users\Yinkai\Projects\MyMiniProgrames\homework\07\ATM-v2.0.py: 'tom0PASS', 'mobile': '13000000001', 'balance': 5000, },
 #                jerry={'password': 'jerry0PASS', 'mobile': '13000000002', 'balance': 5000, })
 
 # 获取用户信息
@@ -37,7 +37,6 @@ def get_users(user_db_file):
     return result
 
 user_db = get_users('user_db.json')
-# print(user_db)
 
 # 保存用户数据
 def save_users(user_db_file: str = 'user_db.json', user_info = user_db):
@@ -64,8 +63,8 @@ def get_cmd(fn):
         :return: command
         '''
         cmd_list = fn(*args, **kwargs)
-        if not cmd_list:
-            return 'Invalid argument.'
+        if not cmd_list:    # 如果在调用menu函数时菜单实参选项输错，则返回None
+            return cmd_list
         cmd = str(input('Command: ')).lower()
         return cmd if cmd in cmd_list else 'Input Error!'
     return wrapper
@@ -87,12 +86,9 @@ def menus(menu_item):
             '''
         f_menu = collections.OrderedDict(
             dict(b='Balance inquiry(B)', d='Deposits(D)', r='Draw money(R)', t='Transfer(T)', s='Settings(S)',
-                 o='Sign out(O)',
-                 h='Help(H)'))
-        menu_settings = collections.OrderedDict(dict(c='Change Password(C)', u='Delete account(D)'))
-        print('{:=^30}'.format('Menu'))
+                 o='Sign out(O)'))
+        print('\n{:=^30}'.format('Menu'))
         print('\n'.join(f_menu.values()))
-        # print('\n'.join(menu_settings.values()))
         print('=' * 30)
         return f_menu.keys()
 
@@ -104,16 +100,22 @@ def menus(menu_item):
             :return: first menu command
             '''
         i_menu = collections.OrderedDict(dict(l='Login(L)', s='Sign in(S)', q='Quit(Q)'))
-        print()
-        print('\t'.join(i_menu.values()))
+        print('\n\t'.join(i_menu.values()))
         return i_menu.keys()
+
+    def settings_menu():
+        s_menu = collections.OrderedDict(dict(c='Change Password(C)', d='Delete account(D)', b='Back(B)'))
+        print('\n'.join(s_menu.values()))
+        return s_menu.keys()
 
     if menu_item == 'index':
         result = index_menu()
     elif menu_item == 'feature':
         result = feature_menu()
+    elif menu_item == 'settings':
+        result = settings_menu()
     else:
-        return None
+        result = None
     return result
 
 
@@ -121,13 +123,13 @@ def menus(menu_item):
 def login():
     '''
     完成用户认证：如果认证成功则返回用户名
-    :return: username or None
+    :return: 登陆成功返回其用户名，否则返回None
     '''
     def auth_user(username, password, usdb=user_db):
         if username in usdb.keys():
             return True if password == usdb[username]['password'] else False
         else:
-            res_mess = "Fileld: {} doesn't exist!".format(username)
+            # res_mess = "Fileld: {} doesn't exist!".format(username)
             return False
 
     for i in range(3):
@@ -171,20 +173,104 @@ def sign_in(usdb: dict = user_db) -> str:
 
     return username
 
-# 业务处理
-def business_analyst():
-    pass
+
+# 业务功能
+def business_features(current_user, feature_cmd: str = None):
+    result = None
+    cmd = str(feature_cmd).lower()
+    if cmd == 'b':
+        print('INFO: \n\tBalance: {:.2f} [USD]\n'.format(user_db[current_user]['balance']))
+    elif cmd == 'd':
+        try:
+            deposit = abs(int(input('Amount of deposit: ')))
+            pre = user_db[current_user]['balance']
+            user_db[current_user]['balance'] += deposit
+            if user_db[current_user]['balance'] == pre + deposit:
+                print('INFO: \n\tExecute completes. \n\tThe current balance: {:.2f} [USD]\n'.format(
+                user_db[current_user]['balance']))
+            else:
+                print('INFO: \n\tExecute failed.')
+        except:
+            print('Error: Invalid input!')
+    elif cmd == 'r':
+        try:
+            cash = abs(int(input('Withdrawal amount: ')))
+            pre = user_db[current_user]['balance']
+            user_db[current_user]['balance'] -= cash
+            if user_db[current_user]['balance'] == pre - cash:
+                print('INFO: \n\tExecute completes. \n\tThe current balance: {:.2f} [USD]\n'.format(
+                user_db[current_user]['balance']))
+            else:
+                print('INFO: \n\tExecute failed.')
+        except:
+            print('Error: \n\tInvalid input!\n')
+    elif cmd == 't':
+        receiver = input('Receiver: ')
+        try:
+            amount = abs(int(input('Amount: ')))
+        except:
+            print('Error: \n\tInvalid input!\n')
+            return
+        if receiver in user_db.keys():
+            receiver_pre = user_db[receiver]['balance']
+            sender_pre = user_db[current_user]['balance']
+            user_db[receiver]['balance'] += amount
+            user_db[current_user]['balance'] -= amount
+            if user_db[receiver]['balance'] == receiver_pre + amount and user_db[current_user]['balance'] - amount:
+                print('INFO: \n\tTransfer to complete!',
+                  '\n\tThe current balance: {:.2f} [USD]\n'.format(user_db[current_user]['balance']))
+            else:
+                print('INFO: \n\tExecute failed.')
+        else:  # 收款人不存在
+            print('FAILED: \n\tReceiver dose not exist.\n')
+    elif cmd == 's':
+        set_cmd = menus('settings')
+        if set_cmd == 'c':
+            current_pass = user_db[current_user]['password']
+            print(current_pass)
+            current_pass = str(input('Please enter your current password: '))
+            print(current_pass)
+            # if current_pass == user_db[current_user]['password']
+        elif set_cmd == 'd':
+            pass
+        elif set_cmd == 'b':
+            pass
+        else:
+            pass
+    else:
+        pass
+    return result
 
 # 主程序
-# os.system('clear')
-# print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
+os.system('clear')
+print('\n' * 20, '{:^130s}'.format('Welcom to xxx ATM system.'), '\n' * 20)
 while True:
-    # cmd1 = get_first_command()
     cmd1 = menus('index')
     if cmd1 == 'l':  # 进入用户登陆界面
-        user = login()
-        cmd2 = menus('feature')
-        print(cmd2)
+        current_user = login()
+        if current_user:    # 用户登陆成功
+            while True:
+                cmd2 = menus('feature')     # 打印功能菜单并获取用户命令
+                if cmd2 == 'b':     # 查询余额
+                    business_features(current_user, cmd2)
+                    continue
+                elif cmd2 == 'd':   # 存款
+                    business_features(current_user, cmd2)
+                    continue
+                elif cmd2 == 'r':   # 取款
+                    business_features(current_user, cmd2)
+                    continue
+                elif cmd2 == 't':   # 转账
+                    business_features(current_user, cmd2)
+                    continue
+                elif cmd2 == 's':
+                    business_features(current_user, cmd2)
+                    continue
+                elif cmd2 == 'o':
+                    break
+                else:
+                    print('Input Error!')
+
     elif cmd1 == 's':  # 进入用户注册界面
         new_user = sign_in()
         if new_user in user_db.keys():
@@ -197,6 +283,9 @@ while True:
             print('Registered failed!')
     elif cmd1 == 'q':  # 即出系统
         save_users()
+        break
+    elif not cmd1:  # 如果在调用menu函数时菜单实参选项输错，则直接退出程序
+        print('Error: Invalid argument.')
         break
     else:
         print('Input Error!')
