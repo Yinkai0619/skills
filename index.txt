@@ -20,4 +20,9 @@
 转置矩阵                Matrix                       Done
 生成半随机ID            id                           Undone
 阶乘                    factorial                   Undone
+扁平化字典
+实现base64编码器和解码器
+求最公共子串
+cache装饰器
+命令分发器
 作业                    homework                    Undone
