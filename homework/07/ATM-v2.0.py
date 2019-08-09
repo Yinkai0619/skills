@@ -5,7 +5,7 @@ Author: Li Yinkai
 Email: yinkai.li@foxmail.com
 Blog: https://blog.51cto.com/yinkai
 
-Date: 2019/7/10 下午7:39
+Date: 2019/8/10 下午7:39
 '''
 
 '''
@@ -23,8 +23,16 @@ import json
 import collections
 from functools import wraps
 
-# users = dict(tom={C:\Users\Yinkai\Projects\MyMiniProgrames\homework\07\ATM-v2.0.py: 'tom0PASS', 'mobile': '13000000001', 'balance': 5000, },
-#                jerry={'password': 'jerry0PASS', 'mobile': '13000000002', 'balance': 5000, })
+
+# 错误提示符
+def error_mes(mes: str):
+    return "\033[0;{c};40m{f}\033[0m{m}".format(c=31, f='Error: ', m=mes)
+
+
+# 正常提示符
+def normal_mes(mes: str):
+    return "\033[0;{c};40m{f}\033[0m{m}".format(c=32, f='INFO: ', m=mes)
+
 
 # 获取用户信息
 def get_users(user_db_file):
@@ -33,33 +41,30 @@ def get_users(user_db_file):
         with open(user_db_file, 'r') as data_file:
             result = json.load(data_file)
     except:
-        # print('File error.')
         result = 'File error.'
     return result
 
+
 user_db = get_users('user_db.json')
 
+
 # 保存用户数据
-def save_users(user_db_file: str = 'user_db.json', user_info = user_db):
+def save_users(user_db_file: str = 'user_db.json', user_info=user_db):
     try:
         with open(user_db_file, 'w') as data:
             json.dump(user_info, data)
     except:
-        print('File error.')
+        print(error_mes('File error.'))
 
-def error_mes(mes: str):
-    return "\033[0;{c};40m{f}\033[0m{m}".format(c=31, f='Error: ', m=mes)
 
-def normal_mes(mes: str):
-    return "\033[0;{c};40m{f}\033[0m{m}".format(c=32, f='INFO: ', m=mes)
-
-def get_mobile():   # 生成手机号码
+def get_mobile():  # 生成手机号码
     while True:
         mobile = input('Please input your mobile: ')
         if len(mobile) == 11 and re.match(r'1\d{10}', mobile):
             return mobile
         else:
             print(error_mes('Invalid input.'))
+
 
 def get_cmd(fn):
     '''
@@ -68,6 +73,7 @@ def get_cmd(fn):
     :param fn:
     :return:
     '''
+
     @wraps(fn)
     def wrapper(*args, **kwargs):
         '''
@@ -78,14 +84,16 @@ def get_cmd(fn):
         :return: command
         '''
         cmd_list = fn(*args, **kwargs)
-        if not cmd_list:    # 如果在调用menu函数时菜单实参选项输错，则返回None
+        if not cmd_list:  # 如果在调用menu函数时菜单实参选项输错，则返回None
             return cmd_list
         cmd = str(input('Command: ')).lower()
         return cmd if cmd in cmd_list else 'Input Error!'
+
     return wrapper
 
+
 # 打印功能菜单：
-@get_cmd    # menus = get_cmd(menus)(menu_item) = wrapper(menu_item) = menus(menu_item)
+@get_cmd  # menus = get_cmd(menus)(menu_item) = wrapper(menu_item) = menus(menu_item)
 def menus(menu_item):
     '''
     All menu
@@ -93,6 +101,7 @@ def menus(menu_item):
     :param menu_item: index, feature
     :return: command list for menu
     '''
+
     # 获取一级菜单命令
     def index_menu():
         '''
@@ -120,7 +129,9 @@ def menus(menu_item):
         return f_menu.keys()
 
     def settings_menu():
-        s_menu = collections.OrderedDict(dict(p='Show profile(P)', cp='Change Password(CP)', cm='Change Mobile(CM)', d='Delete account(D)', b='Back(B)'))
+        s_menu = collections.OrderedDict(
+            dict(p='Show profile(P)', cp='Change Password(CP)', cm='Change Mobile(CM)', d='Delete account(D)',
+                 b='Back(B)'))
         print()
         print('\n'.join(s_menu.values()))
         return s_menu.keys()
@@ -142,6 +153,7 @@ def login():
     完成用户认证：如果认证成功则返回用户名
     :return: 登陆成功返回其用户名，否则返回None
     '''
+
     def auth_user(username, password, usdb=user_db):
         if username in usdb.keys():
             return True if password == usdb[username]['password'] else False
@@ -170,7 +182,7 @@ def sign_in(usdb: dict = user_db) -> str:
     '''
     register_status = False
     while not register_status:  # 如果用户名重复刚重新输入
-        while True:     # 检查用户名是否合法
+        while True:  # 检查用户名是否合法
             username = input('Please input your name or "q" to Quit: ').lower()
             if username == 'q': return None
             if re.match(r'^\w{3,10}$', username):
@@ -181,7 +193,7 @@ def sign_in(usdb: dict = user_db) -> str:
             else:
                 print(error_mes("The user name does not follow the rules."))
         if username in usdb.keys():  # 判断用是否已经存在
-            print('{} exists!'.format(username))
+            print(error_mes('{} exists!'.format(username)))
         else:  # 用户名不重复
             while True:  # 输入合法信息
                 pass1 = getpass.getpass('Please input your password: ')
@@ -203,31 +215,31 @@ def business_features(current_user, feature_cmd: str = None):
     cmd = str(feature_cmd).lower()
     if cmd == 'b':  # 查询余额
         print(normal_mes('\n\tBalance: {:.2f} [USD]\n'.format(user_db[current_user]['balance'])))
-    elif cmd == 'd':    # 存款
+    elif cmd == 'd':  # 存款
         try:
             deposit = abs(int(input('Amount of deposit: ')))
             pre = user_db[current_user]['balance']
             user_db[current_user]['balance'] += deposit
             if user_db[current_user]['balance'] == pre + deposit:
                 print(normal_mes('\n\tExecute completes. \n\tThe current balance: {:.2f} [USD]\n'.format(
-                user_db[current_user]['balance'])))
+                    user_db[current_user]['balance'])))
             else:
                 print(error_mes('Execute failed.'))
         except:
             print(error_mes('Invalid input!'))
-    elif cmd == 'r':    # 取款
+    elif cmd == 'r':  # 取款
         try:
             cash = abs(int(input('Withdrawal amount: ')))
             pre = user_db[current_user]['balance']
             user_db[current_user]['balance'] -= cash
             if user_db[current_user]['balance'] == pre - cash:
                 print(normal_mes('\n\tExecute completes. \n\tThe current balance: {:.2f} [USD]\n'.format(
-                user_db[current_user]['balance'])))
+                    user_db[current_user]['balance'])))
             else:
                 print(error_mes('Execute failed.'))
         except:
             print(error_mes('Invalid input!'))
-    elif cmd == 't':    # 转账
+    elif cmd == 't':  # 转账
         receiver = input('Receiver: ')
         try:
             amount = abs(int(input('Amount: ')))
@@ -240,12 +252,13 @@ def business_features(current_user, feature_cmd: str = None):
             user_db[receiver]['balance'] += amount
             user_db[current_user]['balance'] -= amount
             if user_db[receiver]['balance'] == receiver_pre + amount and user_db[current_user]['balance'] - amount:
-                print(normal_mes('\n\tTransfer to complete!\n\tThe current balance: {:.2f} [USD]\n'.format(user_db[current_user]['balance'])))
+                print(normal_mes('\n\tTransfer to complete!\n\tThe current balance: {:.2f} [USD]\n'.format(
+                    user_db[current_user]['balance'])))
             else:
                 print(error_mes('\n\tExecute failed.'))
         else:  # 收款人不存在
             print(error_mes('\n\tReceiver dose not exist.\n'))
-    elif cmd == 's':    # 设置
+    elif cmd == 's':  # 设置
         while True:
             set_cmd = menus('settings')
             if set_cmd == 'cp':  # 修改密码
@@ -269,36 +282,39 @@ def business_features(current_user, feature_cmd: str = None):
                 else:
                     print(error_mes('Authentication password manipulation error.'))
 
-            elif set_cmd == 'cm':   # 修改手机号吗
+            elif set_cmd == 'cm':  # 修改手机号吗
                 new_mobile = get_mobile()
                 user_db[current_user]['mobile'] = new_mobile
                 if user_db[current_user]['mobile'] == new_mobile:
                     print(normal_mes('Mobile modified successfully.'))
                     continue
                 else:
-                    print('\033[0;31;40mInfo: System Error! Mobile modification failed.\033[0m')
+                    print(normal_mes('System Error! Mobile modification failed.'))
                     continue
-            elif set_cmd == 'd':    # 删除账户
+            elif set_cmd == 'd':  # 删除账户
                 password = getpass.getpass('Please enter your password: ')
                 if password == user_db[current_user]['password']:
                     del_cmd = str(input('Are you sure you want to delete your account? (y/N) :')).lower()
                     if del_cmd == 'y':
                         user_db.pop(current_user)
-                        if not user_db.get(current_user):   # 确认用户账号删除成功
+                        if not user_db.get(current_user):  # 确认用户账号删除成功
                             print(normal_mes('{} deleted successfully'.format(current_user)))
                             return True
                         else:
                             print(error_mes('System Error! Delete failed.'))
                 else:
                     print(error_mes("Authentication failed! "))
-            elif set_cmd == 'p':    # 列出用户信息
-                print(normal_mes('\n\tUsername: {username}\n\tMobile: {mobile}'.format(username = current_user, mobile = user_db[current_user]['mobile'])))
-            elif set_cmd == 'b':    # 返回
+            elif set_cmd == 'p':  # 列出用户信息
+                print(normal_mes('\n\tUsername: {username}\n\tMobile: {mobile}'.format(username=current_user,
+                                                                                       mobile=user_db[current_user][
+                                                                                           'mobile'])))
+            elif set_cmd == 'b':  # 返回
                 return
             else:
                 print(error_mes('Invalid Input.'))
     else:
         return
+
 
 # 主程序
 os.system('clear')
@@ -308,22 +324,22 @@ while True:
     if cmd1 == 'i':  # 进入用户登陆界面
         logout_flag = False
         current_user = login()
-        if current_user:    # 用户登陆成功
+        if current_user:  # 用户登陆成功
             while True:
-                cmd2 = menus('feature')     # 打印功能菜单并获取用户命令
-                if cmd2 == 'b':     # 查询余额
+                cmd2 = menus('feature')  # 打印功能菜单并获取用户命令
+                if cmd2 == 'b':  # 查询余额
                     business_features(current_user, cmd2)
                     continue
-                elif cmd2 == 'd':   # 存款
+                elif cmd2 == 'd':  # 存款
                     business_features(current_user, cmd2)
                     continue
-                elif cmd2 == 'r':   # 取款
+                elif cmd2 == 'r':  # 取款
                     business_features(current_user, cmd2)
                     continue
-                elif cmd2 == 't':   # 转账
+                elif cmd2 == 't':  # 转账
                     business_features(current_user, cmd2)
                     continue
-                elif cmd2 == 's':   # 设置
+                elif cmd2 == 's':  # 设置
                     logout_flag = business_features(current_user, cmd2)
                     if logout_flag:
                         break
@@ -337,10 +353,10 @@ while True:
         new_user = sign_in()
         if new_user in user_db.keys():
             print(normal_mes('{} Registered successfully!'.format(new_user)))
-            print(
+            print(normal_mes(
                 'Account Info: \n\tAccount: {user}\n\tMobile: {mobile}\n\tBalance: {balance:.2f} [USD]\n\n'.format(
                     user=new_user, mobile=user_db[new_user]['mobile'],
-                    balance=user_db[new_user]['balance']))
+                    balance=user_db[new_user]['balance'])))
         else:
             print(normal_mes('Registered failed!'))
     elif cmd1 == 'q':  # 即出系统
@@ -351,5 +367,3 @@ while True:
         break
     else:
         print(error_mes('Input Error!'))
-
-
