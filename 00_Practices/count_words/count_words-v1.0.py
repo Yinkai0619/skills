@@ -7,29 +7,25 @@ Blog: https://blog.51cto.com/yinkai
 
 Date: 2019/8/19 14:38
 '''
-# import copy
+from collections import defaultdict
 
-target = {}
-with open('sample.txt', 'r', encoding='utf-8', newline='\r\n') as f:
-    line_num = 0
+filename = 'sample.txt'
+count = 0
+d = defaultdict(lambda :0)
+with open(filename, mode='r', encoding='utf-8') as f:
     for line in f:
+        count += 1
         # print(line)
+
         words = line.split()
-        # print(words)
         for word in words:
-            target[word] = target.setdefault(word, 1) + 1
+            d[word] += 1
 
-# print(target['the'])
-print(target)
+        # if count == 5: break
+# print(d)
+# print(sorted(d.items(), key=lambda k: k[1], reverse=True))
 
-max_value = 0
-top_words = {}
-for k, v in target.items():
-    if v > 0:
-
-    print(k,v)
-
-
-
-
-
+# os.path.commonprefix(list)
+for k in d.keys():
+    if k.find('path') > -1:
+        print(k)
