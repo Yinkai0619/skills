@@ -8,8 +8,6 @@ Blog: https://blog.51cto.com/yinkai
 Date: 2019/7/17 16:43
 '''
 
-import base64
-
 def get_alphabet(encodeing : bool = True):
     if encodeing:
         return ''.join([chr(x) for x in range(65, 91)] + [chr(x) for x in range(97, 123)] + [str(x) for x in range(10)] + ['+', '/']).encode()
@@ -46,18 +44,17 @@ def base64_encode(src) -> bytearray:
 
     return bytes(target)
 
+if __name__ == '__main__':
+    import base64
 
-alphabet = get_alphabet()
+    alphabet = get_alphabet()
 
-str_list = ['a', 'ab', 'abc', 'abcd', '`', 'Yinkai', 'Python', 'Li银凯']
+    str_list = ['a', 'ab', 'abc', 'abcd', '`', 'Yinkai', 'Python', 'Li银凯']
 
-# print(alphabet)
-# print(len(alphabet))
-for x in str_list:
-    print(x)
-    print(base64_encode(x))
-    print(base64.b64encode(x.encode()))
-    print()
-# x='Yinkai'
-# print(base64.b64encode(x.encode()))
-# print(base64_encode(x))
+    # print(alphabet)
+    # print(len(alphabet))
+    for x in str_list:
+        print(x)
+        print(base64_encode(x))
+        print(base64.b64encode(x.encode()))
+        print()
