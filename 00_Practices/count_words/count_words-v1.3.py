@@ -34,26 +34,31 @@ def make_key2(src: str, chars=set(r',."[]{}!@#$%^&*()_+=/\|`~;: ')):
     :param chars: 特殊字符集合
     :return:
     '''
-    target = []
+    # target = []
     # src = src.lower()
     length = len(src)
     start = 0
     for i, c in enumerate(src):
         if c in chars:
             if i != start:
-                target.append(src[start:i].lower())
+                # target.append(src[start:i].lower())
+                yield src[start:i].lower()
             start = i + 1
     else:
         if start < length:
-            target.append(src[start:].lower())
-    return target
+            # target.append(src[start:].lower())
+            yield src[start:].lower()
+    # return target
 
 
 filename = 'sample.txt'
-d = defaultdict(lambda: 0)  # 使用默认字典作为容器，装载结果
+# d = defaultdict(lambda: 0)  # 使用默认字典作为容器，装载结果
+d = dict()
 with open(filename, mode='r', encoding='utf-8') as f:
     for line in f:
-        words = make_key2(line)
-        for word in words:
-            d[word] += 1  # 当字典中已经包含了指定的key时，value + 1
-[print(word) for word in sorted(d.items(), key=lambda k: k[1], reverse=True)]
+        word_list = make_key2(line)
+        for word in word_list:
+            # d[word] += 1  # 当字典中已经包含了指定的key时，value + 1
+            d[word] = d.get(word, 0) + 1
+for word in sorted(d.items(), key=lambda k: k[1], reverse=True):
+    print(word)

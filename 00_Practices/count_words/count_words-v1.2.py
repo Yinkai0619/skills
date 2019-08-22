@@ -53,7 +53,10 @@ filename = 'sample.txt'
 d = defaultdict(lambda: 0)  # 使用默认字典作为容器，装载结果
 with open(filename, mode='r', encoding='utf-8') as f:
     for line in f:
-        words = make_key2(line)
-        for word in words:
-            d[word] += 1  # 当字典中已经包含了指定的key时，value + 1
-[print(word) for word in sorted(d.items(), key=lambda k: k[1], reverse=True)]
+        word_list = map(make_key2, line.split())
+        for words in word_list:
+            for word in words:
+                d[word] += 1  # 当字典中已经包含了指定的key时，value + 1
+
+for word in sorted(d.items(), key=lambda k: k[1], reverse=True):
+    print(word)
