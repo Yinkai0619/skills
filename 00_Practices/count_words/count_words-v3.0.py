@@ -50,22 +50,17 @@ def make_key2(src: str, chars=set(r',."[]{}!@#$%^&*()_+=/\|`~;: ')):
             yield src[start:]
     # return target
 
-def topn(n:int, filename):
+def topn(n:int, filename, stopwords = set()):
     d = dict()
     with open(filename, mode='r', encoding='utf-8') as f:
         for line in f:
             for word in map(str.lower, make_key2(line)):
-                d[word] = d.get(word, 0) + 1
-    count = 0
-    for word in sorted(d.items(), key=lambda k: k[1], reverse=True):    # 依据字典中值（key=lambda k: k[1]）的顺序进行逆序排序
-        if count >= n: break
-        count += 1
-        yield word
-    # order_words = sorted(d.items(), key=lambda k: k[1], reverse=True)
-    # return order_words[:n]
+                if word not in stopwords:
+                    d[word] = d.get(word, 0) + 1
 
+    yield from sorted(d.items(), key=lambda k: k[1], reverse=True)[:n]    # 依据字典中值（key=lambda k: k[1]）的顺序进行逆序排序
 
 filename = 'sample.txt'
 # print(topn(10, filename='sample.txt'))
-for word in topn(10, filename='sample.txt'):
+for word in topn(10, filename='sample.txt', stopwords={'a', 'of', 'the', '\n'}):
     print(word)

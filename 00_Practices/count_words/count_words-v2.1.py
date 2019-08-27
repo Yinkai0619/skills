@@ -56,14 +56,8 @@ def topn(n:int, filename):
         for line in f:
             for word in map(str.lower, make_key2(line)):
                 d[word] = d.get(word, 0) + 1
-    count = 0
-    for word in sorted(d.items(), key=lambda k: k[1], reverse=True):    # 依据字典中值（key=lambda k: k[1]）的顺序进行逆序排序
-        if count >= n: break
-        count += 1
-        yield word
-    # order_words = sorted(d.items(), key=lambda k: k[1], reverse=True)
-    # return order_words[:n]
 
+    yield from sorted(d.items(), key=lambda k: k[1], reverse=True)[:n]    # 依据字典中值（key=lambda k: k[1]）的顺序进行逆序排序
 
 filename = 'sample.txt'
 # print(topn(10, filename='sample.txt'))
