@@ -7,16 +7,37 @@ Blog: https://blog.51cto.com/yinkai
 
 Date: 2019/8/27 16:32
 '''
-from configparser import ConfigParser
+
+
+def ini2json(src):
+    '''
+    将ini格式文件转换成json格式文件
+
+    :param src:
+    :return:
+    '''
+    from configparser import ConfigParser
+    from pathlib import Path
+    import json
+
+    if type(src) != 'pathlib.PosixPath':
+        src = Path(src)
+
+    target_file = src.with_suffix('.json')
+
+    if src.exists() and src.suffix == '.ini':
+        temp = dict()
+
+        ini_file = ConfigParser()
+        ini_file.read(src, encoding='utf-8')
+        for section in ini_file.sections():
+            temp[section] = dict(ini_file.items(section))
+
+        with open(target_file, 'w', encoding='utf-8') as tf:
+            json.dump(temp, tf)
+    else:
+        return '{} is an invalid ini file.'.format(str(src))
+
 
 filename = 'my.ini'
-# newfilename
-
-ini_file = ConfigParser()
-ini_file.read(filename, encoding='utf-8')
-for section, option in ini_file.items():
-    # print(type(section), section)
-    # print(type(option), option)
-    # for k, v in option.items():
-    # print('{}-->{}:{}'.format(section, k, v))
-    print(ini_file.options(section))
+ini2json(filename)
