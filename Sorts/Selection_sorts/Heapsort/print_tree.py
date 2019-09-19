@@ -52,18 +52,21 @@ def print_tree2(array):
     :return:
     '''
     '''
-    以深度为4的二叉树为示例说明：
-      i  前空格       元素间空格
-    1 3  7=2*3-1     0 2*4+1
-    2 2  3=2*2-1     7=2*3+1
-    3 1  1=2*1-1     3=2*1+1
-    4 0  0=2*0-1     1=2*0+1 
+    计算空格单位数量。此处以深度为4的满二叉树为示例说明：
+    行  i  前空格       元素间空格
+    1   3  7=2*3-1     0 2*4+1
+    2   2  3=2*2-1     7=2*3+1
+    3   1  1=2*1-1     3=2*1+1
+    4   0  0=2*0-1     1=2*0+1 
     '''
     unit_width = len(str(max(array)))
     length = len(array)
+    print('Length : ', length)
     index = 1   # 因为使用时前面补0了,不然应该是math.ceil(math.log2(len(array)+1))
-    depth = math.ceil(math.log2(length))
-    sep = ' ' * unit_width
+    depth = math.ceil(math.log2(length))    # 二叉树的深度（二叉树性质4）：具有n个结点的完全二叉树的深度为: math.ceil(math.log2(n))+1，因为接收的参数中已经添加一个占位元素，所以无需再加1
+    print('Depth : ', depth )
+    sep = '-' * unit_width
+    print('Sep: ', sep)
 
     for i in range(depth - 1, -1, -1):  # 二叉树层数（迭代上方注释中的i）
         pre = 2 ** i - 1    # 前空格数量
@@ -71,10 +74,12 @@ def print_tree2(array):
         offset = 2 ** (depth - i - 1)
         line = array[index: index + offset]  # 取元素
         index += offset
-        intervalspace = sep * (2 * pre + 1)
-        print(intervalspace.join(map(str, line)))
+        interval_space = sep * (2 * pre + 1)
+        print(interval_space.join(map(str, line)))
 
 
 if __name__ == '__main__':
     # print_tree1([x + 1 for x in range(10)])
+    # print_tree1([30, 40, 50, 60, 70, 80, 90, 91, 93, 95, 97, 99, 100, 101, 102])
     print_tree2([0, 30, 40, 50, 60, 70, 80, 90, 91, 93, 95, 97, 99, 100, 101, 102])
+    # print_tree2([0, 30, 40, 50, 60, 70, 80, 90, 91, 93, 95, 97, 99, 10, 10, 10])
