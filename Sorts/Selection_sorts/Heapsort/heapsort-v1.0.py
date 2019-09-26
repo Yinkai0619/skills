@@ -32,13 +32,13 @@ def heap_adjust(n, i, array: list):
     :param array: 待排序数据
     :return: None
     '''
-    while 2 * i <= n:   # 判断当前结点是否有左孩子结点
+    while 2 * i <= n:   # 判断当前结点是否还有左孩子结点
         # 根据二叉树性质5，孩子结点判断：2i为左孩子，2i+1为右孩子
         lchild_index = 2 * i
-        # 先假定左孩子为最大值，如果存在右孩子，且右孩子的值大于左孩子值，则最大孩子索引为右孩子
+        # 先假定左孩子为最大值
         max_child_index = lchild_index  # n=2i
         # 左右孩子值进行比较，当右孩子值大于左孩子值时，将最大值的索引标记为右孩子值的索引：
-        if n > lchild_index and array[lchild_index + 1] > array[lchild_index]:  # n>2i时说明还有右孩子。
+        if n > lchild_index and array[lchild_index + 1] > array[lchild_index]:  # 如果存在右孩子，且右孩子的值大于左孩子值，则最大值索引指向右孩子。n>2i时说明还有右孩子。
             max_child_index = lchild_index + 1  # n=2i+1
 
         # 与子树的根结点比较
@@ -48,9 +48,8 @@ def heap_adjust(n, i, array: list):
         else:
             break
 
-        print('-'*50)
-        print_tree.print_tree(array)
-        print('-'*50)
+        # print_tree.print_tree(array)
+        # print('-'*50)
 
 # 构建大顶堆（也称为大根堆）
 def max_heap(total, array: list):
@@ -78,24 +77,24 @@ def sort(total, array: list):
     :return:
     '''
     while total > 1:
-        array[1], array[total] = array[total], array[1] # 堆顶和最后一个结点交换
+        array[1], array[total] = array[total], array[1] # 堆顶和最后一个结点互换
         total -= 1
-
+        if total == 2 and array[total] >= array[total-1]:   # 当剩余2个元素，如果最后一个结点比堆顶大，则不再调整
+            break
         heap_adjust(total, 1, array)
     return array
 
-# 构建待排序元素：
-# origin = [x * 10 for x in range(1, 10)]
-# random.shuffle(origin)
-# origin.insert(0, 0)
-origin = [0, 10, 20, 90, 80, 50, 60, 40, 30, 70]    # 为了能和二叉树编码一致，增加一个无用的占位值0在首位
-print(origin)
-print_tree.print_tree(origin, True)
+if __name__ == '__main__':
+    # 构建待排序元素：
+    # origin = [x * 10 for x in range(1, 10)]
+    # random.shuffle(origin)
+    # origin.insert(0, 0)
+    origin = [0, 20, 10, 40, 70, 50, 60, 90, 30, 80]    # 为了能和二叉树编码一致，增加一个无用的占位值0在首位
+    print(origin)
+    print_tree.print_tree(origin, True)
+    print('='*50)
 
-total = len(origin) - 1 # 初始待排序元素个数，即n
-# heap_adjust(total, total // 2, origin)
-# print(origin)
-# print_tree.print_tree(origin, True)
+    total = len(origin) - 1 # 初始待排序元素个数，即n
 
-print_tree.print_tree(max_heap(total, origin))
-# print_tree.print_tree(sort(total, origin))
+    print_tree.print_tree(sort(total, max_heap(total, origin)))
+    print(origin)
