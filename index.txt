@@ -25,6 +25,8 @@
 求最公共子串             longest_substring            Done
 cache装饰器
 命令分发器
+单词统计                count_words                 Done
+密码强度                Password_Strength       Undone
 ini文件转json          ini2json                    Done
 树                       tree                    Done
 作业                    homework                    Undone
