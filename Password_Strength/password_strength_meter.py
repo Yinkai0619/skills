@@ -27,26 +27,49 @@ Date: 2019/10/20 下午9:34
 '''
 
 password1 = r'AbCd@135246_'
-password2 = r'AbCa'
+password2 = r'AbCa5,'
 
 def strength_check(password : str) -> str:
 
     # 检查密码长度
-    def length_check(password = password, low = 10, upper = 15):
-        if not low <= len(password) <= upper:
-            return 'The password too short.'
+    def length_check(password = password, low = 10, upper = 15) -> bool:
+        '''
+        密码长度检查
+        :param password:
+        :param low: 密码位数下限
+        :param upper: 密码位数上限
+        :return: 密码位数合法时返回： Ture, 否则返回：False
+        '''
+        return True if low <= len(password) <= upper else False
 
     # 检查是否有非法字符
-    special = {chr(x) for x in range(33, 39)} | {chr(x) for x in range(63, 65)}
-    special.update('*+-_'); special.discard('"')
-    print(special)
-    # regex = re.compile('')
+    def illegal_check(password : str = password) -> bool:
+        '''
+        非法字符检查
+        :param password:
+        :return: 没有非法字符时返回：True，否则返回：False
+        '''
+        # 生成特殊字符
+        # special = {chr(x) for x in range(33, 39)} | {chr(x) for x in range(63, 65)}
+        # special.update('*+-_'); special.discard('"')
+        # special_characters = ''
+        # for s in special:
+        #     special_characters += s
+        # print(special_characters)
+
+        regex = re.compile('[^a-zA-Z\d!%&#\-@_?*$+]+', re.S)
+        illegal_characters = regex.findall(password)
+        # print(illegal_characters)
+        return False if illegal_characters else True
 
     # 检查字符组合
 
-    return length_check(password)
+
+    print(password)
+    print(illegal_check(password))
+    print(length_check(password))
 
 
 
 
-print(strength_check(password1))
+strength_check(password2)
