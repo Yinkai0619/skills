@@ -17,17 +17,20 @@ Date: 2019/10/26 下午12:01
 '''
 import re
 
-text='foo = 23 + 42 * 10'
-
-def serializing(text: str = text) -> list:
+def serializing(text: str) -> list:
     tokens = list()
-    name_regex = re.compile('^[a-z]+', re.S)
     num_regex = re.compile('\d+', re.S)
+    regex = re.compile('(?P<NAME>^[a-z]+).+(?P<EQ>=).+(?P<PLUS>\+).+(?P<TIMES>\*)', re.S)
+    for value in regex.finditer(text):
+        for v in value.groupdict().items():
+            tokens.append(v)
 
     for num in num_regex.findall(text):
         tokens.append(('NUM', num))
 
     return tokens
 
-print(serializing())
+if __name__ == '__main__':
+    text='foo = 23 + 42 * 10'
+    print(serializing(text))
 
