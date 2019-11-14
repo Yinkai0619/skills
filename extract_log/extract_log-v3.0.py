@@ -5,6 +5,7 @@ import datetime
 import random
 from queue import Queue
 import threading
+from pathlib import Path
 
 # 模拟数据生成者
 def source(seconds=1):
@@ -91,14 +92,37 @@ def extract(line:str):
         return line
 
 # 装载数据
-def load(filename:str):
-    with open(filename, encoding='utf8') as f:
+def load_file(filename, encoding='utf-8', newline='\r\n'):
+    filename = str(filename)
+    with open(filename, encoding=encoding, newline=newline) as f:
         for line in f:
             fields = extract(line)
             if isinstance(fields, (dict,)):
                 yield fields
             else:
                 print('No match: {}'.format(fields))
+
+
+def load(*paths, ext='*.log,*.txt,*.py', recursion=False):
+    for p in paths:
+        path = Path(p)
+        if path.is_dir():
+            if isinstance(ext, str):
+                ext = ext.split(',')
+                # print(ext)
+            for e in ext:
+                files = path.rglob(e) if recursion else path.glob(e)
+                for file in files:
+                    load_file(file.absolute())
+                    # print(file)
+                    # with file.open(encoding=encoding, newline=newline) as f:
+                    #     for line in f:
+                    #         print(line)
+        elif path.is_file():
+            load_file(path.absolute())
+        else:
+            print('File error!')
+
 
 if __name__ == '__main__':
 
