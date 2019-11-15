@@ -20,7 +20,24 @@ def get_code2():
     ret = regex.findall(chars)
     yield '-'.join(ret[:4])
 
+def count(code:str, ignore_characters='-'):
+    ret = dict()
+    if isinstance(ignore_characters, str):
+        ic = list(ignore_characters.split(','))
+    for c in code:
+        if c in ic:
+            continue
+        v = ret.get(c)
+        if v:
+            ret[c] = v + 1
+        else:
+            ret.setdefault(c, 1)
+    return ret
+
 if __name__ == '__main__':
-    for _ in range(200):
-        print(next(get_code1()))
+
+    code = 'NFQL9-5F9H8-JOTB9-CPLRJ'
+    print(count(code))
+    # for _ in range(200):
+    #     print(next(get_code1()))
 
