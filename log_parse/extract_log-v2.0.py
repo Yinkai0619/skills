@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import datetime
 import re
+from user_agents import parse
+
 
 ops = {
     'datetime':lambda dstr: datetime.datetime.strptime(dstr, '%d/%b/%Y:%H:%M:%S %z'),
@@ -36,5 +38,13 @@ if __name__ == '__main__':
 
     # print(extract(line))
     # extract(line)
-    for x in load('test.log'):
-        print(x)
+    # for x in load('test.log'):
+    #     print(x)
+
+    uastr = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+    print(uastr)
+
+    ua = parse(uastr)
+    print(ua, type(ua))
+    print(ua.browser)
+    print(ua.browser.family, ua.browser.version_string)

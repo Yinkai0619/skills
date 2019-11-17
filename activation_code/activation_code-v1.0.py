@@ -24,20 +24,19 @@ def count(code:str, ignore_characters='-'):
     ret = dict()
     if isinstance(ignore_characters, str):
         ic = list(ignore_characters.split(','))
+
     for c in code:
         if c in ic:
             continue
-        v = ret.get(c)
-        if v:
-            ret[c] = v + 1
-        else:
-            ret.setdefault(c, 1)
+        ret[c] = ret.get(c, 0) + 1
+
     return ret
 
 if __name__ == '__main__':
-
-    code = 'NFQL9-5F9H8-JOTB9-CPLRJ'
-    print(count(code))
-    # for _ in range(200):
-    #     print(next(get_code1()))
-
+    counter = dict()
+    for _ in range(200):
+        code = next(get_code2())
+        for k, v in count(code).items():
+            counter[k] = counter.get(k, 0) + v
+        print(code)
+    print(sorted(counter.items(), key=lambda item: item[1], reverse=True))
