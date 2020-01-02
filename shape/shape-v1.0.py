@@ -18,7 +18,20 @@ class Triangle(Shape):
         p = (self.a + self.b + self.c) / 2
         return math.sqrt(p * (p - self.a) * (p - self.b) * (p - self.c))
 
-class Rectangle(Shape):
+def serialize(m):
+    def wrapper(cls):
+        # if m.lower() == 'json':
+        #     ser = json.dumps(cls.__dict__)
+        # elif m.lower() == 'msgpack':
+        #     ser = msgpack.dumps(cls.__dict__)
+        # else:
+        #     raise NotImplementedError
+        # return ser
+        print(cls.__dict__)
+    return wrapper
+
+@serialize(m='json')
+class Rectangle(Shape):     # Rectangle = serialize(m='json')(Rectangle) = wrapper(Rectangle)
     def __init__(self, width, height):
         self.width = width
         self.height = height
@@ -50,6 +63,9 @@ class SerializableCircleMixin(SerializableMixin, Circle):
 # c = Circle(4)
 # print(c.area)
 
-scm = SerializableCircleMixin(4)
-print(scm.area)
-print(scm.serialize())
+# scm = SerializableCircleMixin(4)
+# print(scm.area)
+# print(scm.serialize())
+
+ran = Rectangle(4,5)
+# print(ran.area)
