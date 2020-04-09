@@ -29,18 +29,30 @@ def worker(x = 3):
             # raise Exception('Thread error.')
             break
 
-t = threading.Thread(target=worker, name='worker1')
+class MyThread(threading.Thread):
+    def start(self) -> None:
+        print('Start~~~~~~~~~~~~~')
+        super().start()
+
+    def run(self) -> None:
+        print('Run~~~~~~~~~~~~~')
+        super().run()
+
+
+t = MyThread(target=worker, name='worker1')
 # showthreadinfo()
+# t.start()
+t.run()
 print(t.ident)
-t.start()
 
-while True:
-    time.sleep(1)
-    if t.is_alive():
-        print('{} {} alive.'.format(t.name, t.ident))
-    else:
-        print('{} {} dead.'.format(t.name, t.ident))
-        t.start()
-
-
-print('=====end=====')
+# while True:
+#     time.sleep(1)
+#     if t.is_alive():
+#         print('{} {} alive.'.format(t.name, t.ident))
+#     else:
+#         print('{} {} dead.'.format(t.name, t.ident))
+#         t.start()
+#     break
+#
+#
+# print('=====end=====')
