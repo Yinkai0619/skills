@@ -3,7 +3,7 @@
 import redis
 import time
 
-pool = redis.ConnectionPool(host="localhost", port=6379, password="redispass", db=25)
+pool = redis.ConnectionPool(host="localhost", port=6379, password="redispass", db=20)
 r = redis.Redis(connection_pool=pool)
 # r.flushdb
 for i in range(1000):
