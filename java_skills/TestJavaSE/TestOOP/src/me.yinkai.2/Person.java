@@ -3,6 +3,7 @@ public class Person {
     int age;
     double height;
     double weight;
+    static String organization;
 
     public Person(){
     //    name = "Nana";
