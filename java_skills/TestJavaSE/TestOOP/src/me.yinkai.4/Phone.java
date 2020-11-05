@@ -61,6 +61,7 @@ public class Phone {
             return true;
         if (obj == null)
             return false;
+        System.out.println(this.getClass()+"\t"+obj.getClass());
         if (getClass() != obj.getClass())
             return false;
         Phone other = (Phone) obj;
