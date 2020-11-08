@@ -13,20 +13,21 @@ public class Test {
         System.out.println("========================================");
         System.out.println();
 
-        Dog d = new Dog();
-        Animal an = d;
+        // Dog d = new Dog();
+        // Animal an = d;
+        Animal an = PetStore.getAnimal("dog");
         nana.play(an);
         Dog dog = (Dog)an;
 
         dog.eat();
-        dog.setWeight(100.2);
-        System.out.println(dog.getWeight());
+        // dog.setWeight(100.2);
+        // System.out.println(dog.getWeight());
 
-        Animal dog1 = PetStore.getAnimal("dog");
-        dog1.shout();
-        Dog dog2 = (Dog) dog1;
-        dog2.setWeight(40.5);
-        System.out.println(dog2.getWeight());        
+        // Animal dog1 = PetStore.getAnimal("dog");
+        // dog1.shout();
+        // Dog dog2 = (Dog) dog1;
+        // dog2.setWeight(40.5);
+        // System.out.println(dog2.getWeight());        
 
 
 
