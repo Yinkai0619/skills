@@ -36,17 +36,17 @@ threading.Thread(target=worker, name="worker", args=(10,)).start()
 threading.Thread(target=boss, name="boss", kwargs={'check_time':1}).start()
  """
 
-
 # 使用Event类方法：
 
 cups = []
 e = threading.Event()
 
-def worker(e:threading.Event, count=10):
+
+def worker(e: threading.Event, count=10):
     while True:
         print("I am working.")
         time.sleep(0.5)
-        cups.append(1) 
+        cups.append(1)
 
         if len(cups) >= count:
             e.set()
@@ -54,10 +54,11 @@ def worker(e:threading.Event, count=10):
     print(cups)
 
 
-def boss(e:threading.Event, check_time):
-    print("Boss is wating.")
-    e.wait()    # 线程阻塞，至到e置为True (e.set())
+def boss(e: threading.Event, check_time):
+    print("Boss is waiting.")
+    e.wait()  # 线程阻塞，至到e置为True (e.set())
     print("Good Job.")
 
+
 threading.Thread(target=worker, name="worker", args=(e, 10,)).start()
-threading.Thread(target=boss, name="boss", kwargs={'check_time':1, 'e':e}).start()
+threading.Thread(target=boss, name="boss", kwargs={'check_time': 1, 'e': e}).start()

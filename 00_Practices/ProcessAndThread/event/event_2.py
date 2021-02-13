@@ -1,11 +1,13 @@
-import threading
 import logging
+import threading
 
 logging.basicConfig(level=logging.INFO)
 
-def do(event:threading.Event, interval:int):
-    while not event.wait(interval):     # 等待3秒后返回False
+
+def do(event: threading.Event, interval: int):
+    while not event.wait(interval):  # 等待3秒后返回False
         logging.info("do sth.")
+
 
 e = threading.Event()
 threading.Thread(target=do, args=(e, 3)).start()

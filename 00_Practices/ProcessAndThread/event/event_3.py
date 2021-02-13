@@ -1,4 +1,8 @@
 from threading import Thread, Event
+"""
+自实现timer，延迟interval时长后执行函数。
+"""
+
 
 class Timer:
     def __init__(self, interval, func, args=(), kwargs={}) -> None:
@@ -22,9 +26,10 @@ class Timer:
     def cancel(self):
         self.event.set()
 
-    
+
 def add(x, y):
     print(x + y)
+
 
 t = Timer(3, add, (4, 5))
 t.start()
