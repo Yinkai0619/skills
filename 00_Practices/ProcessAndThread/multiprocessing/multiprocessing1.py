@@ -1,6 +1,5 @@
 import datetime
 import logging
-# from threading import Thread
 import multiprocessing
 
 logging.basicConfig(level=logging.INFO, format="%(thread)s %(message)s")
