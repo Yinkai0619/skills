@@ -2,6 +2,11 @@ import datetime
 import logging
 import multiprocessing
 
+""" 
+手动启动5个进程，并行完成50亿次累加运算，观察用时。
+"""
+
+
 logging.basicConfig(level=logging.INFO, format="%(thread)s %(message)s")
 
 start = datetime.datetime.now()

@@ -1,6 +1,8 @@
 import datetime
 import logging
 
+""" 在一个线程内运行50亿次累加运算，观察用时 """
+
 logging.basicConfig(level=logging.INFO, format="%(thread)s %(message)s")
 
 start = datetime.datetime.now()
@@ -13,11 +15,8 @@ def calc():
 
 
 if __name__ == "__main__":
-    calc()
-    calc()
-    calc()
-    calc()
-    calc()
+    for _ in range(5):
+        calc()
 
     delta = (datetime.datetime.now() - start).total_seconds()
     logging.info(delta)         # 8597917184 256.089637
