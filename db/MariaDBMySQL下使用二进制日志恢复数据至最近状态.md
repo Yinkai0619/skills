@@ -1,4 +1,4 @@
-# MariaDB/MySQL下使用二进制日志恢复数据至最近状态
+# MariaDB / MySQL下使用二进制日志恢复数据
 
 ## 原理介绍
 
