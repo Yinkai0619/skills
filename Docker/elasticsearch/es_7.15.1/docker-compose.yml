@@ -1,0 +1,93 @@
+# version: '2.2'
+version: '3.8'
+services:
+  # 使用方法：第一次启动时会在当前目录下创建映射目录，如果是在$HOME下会因为没有组写入权限导致启动失败，此时给新创建的目录递归增加组写入权限后重新启动即可
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+    container_name: es01
+    environment:
+      - node.name=es01   #当前节点的名称
+      - cluster.name=myels #es-docker-cluster, 集群名称
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM环境，初始的堆空间大小（-Xms）和最大的堆空间大小（-Xmx），对于ES，这两个必须保持一致
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      # - target: /usr/share/elasticsearch/data
+      # - ${PWD}/es01/config:/usr/share/elasticsearch/config
+      - ${PWD}/es01/data:/usr/share/elasticsearch/data
+      - ${PWD}/es01/logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9200:9200   # 对外开放的服务端口，用于接受客户端请求；集群内部事务判定和协调使用9300端口
+    networks:
+      elastic:
+        ipv4_address: 172.18.0.10
+      # - default
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=myels #es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      # - ${PWD}/es02/config:/usr/share/elasticsearch/config
+      - ${PWD}/es02/data:/usr/share/elasticsearch/data
+      - ${PWD}/es02/logs:/usr/share/elasticsearch/logs
+      # - data02:/usr/share/elasticsearch/data
+    networks:
+      elastic:
+        ipv4_address: 172.18.0.20
+      # - default
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+    container_name: es03
+    environment:
+      - node.name=es03  # 当前节点的名称
+      - cluster.name=myels #es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM环境，初始的堆空间大小（-Xms）和最大的堆空间大小（-Xmx），对于ES，这两个必须保持一致
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      # - ${PWD}/es03/config:/usr/share/elasticsearch/config
+      - ${PWD}/es03/data:/usr/share/elasticsearch/data
+      - ${PWD}/es03/logs:/usr/share/elasticsearch/logs
+      # - data03:/usr/share/elasticsearch/data
+    networks:
+      elastic:
+        ipv4_address: 172.18.0.30
+      # - default
+
+# volumes:
+#   data01:
+#     driver: local
+#   data02:
+#     driver: local
+#   data03:
+#     driver: local
+
+networks:
+  elastic:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24
+  # default:
+  #  external:
+  #   name: mybr0

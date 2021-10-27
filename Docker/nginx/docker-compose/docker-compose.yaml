@@ -1,0 +1,50 @@
+networks:
+  webnet: {}
+services:
+  ngx1:
+    container_name: ngx1
+    expose:
+    - 80
+    image: nginx:latest
+    networks:
+      webnet:
+        aliases:
+        - www
+    ports:
+    - 80:80/tcp
+    volumes:
+    - /home/yinkai/Projects/docker_skills/nginx/ngx1/conf:/etc/nginx:rw
+    - /home/yinkai/Projects/docker_skills/nginx/ngx1/logs:/var/log/nginx:rw
+    - /home/yinkai/Projects/docker_skills/nginx/ngx1/html:/usr/share/nginx/html:rw
+  web1:
+    container_name: nginx-web1
+    expose:
+    - 80
+    image: nginx:latest
+    networks:
+      webnet:
+        aliases:
+        - www
+    ports:
+    - 8081:80/tcp
+    volumes:
+    - /home/yinkai/Projects/docker_skills/nginx/web1/conf:/etc/nginx:rw
+    - /home/yinkai/Projects/docker_skills/nginx/web1/logs:/var/log/nginx:rw
+    - /home/yinkai/Projects/docker_skills/nginx/web1/html:/usr/share/nginx/html:rw
+  web2:
+    container_name: nginx-web2
+    expose:
+    - 80
+    image: nginx:latest
+    networks:
+      webnet:
+        aliases:
+        - www
+    ports:
+    - 8082:80/tcp
+    volumes:
+    - /home/yinkai/Projects/docker_skills/nginx/web2/conf:/etc/nginx:rw
+    - /home/yinkai/Projects/docker_skills/nginx/web2/logs:/var/log/nginx:rw
+    - /home/yinkai/Projects/docker_skills/nginx/web2/html:/usr/share/nginx/html:rw
+version: '3.0'
+
