@@ -11,12 +11,15 @@ try:
     # insert_sql = "INSERT INTO user (login_name, first_name, last_name, password) VALUES ('user1', 'user', '1', sha('user1pass'))"
     # cursor.execute(insert_sql)
 
-    user = "user12"
+    user = "'user"
+    id = "12 or 1=1"
     # pwd = "user12pass"
-    pwd = "12345' or 'a'='a"
-    sql = "SELECT * FROM user WHERE login_name='{}' and password = '{}'".format(user, pwd)
+    # pwd = "12345' or 'a'='a"
+    # sql = "SELECT * FROM user WHERE login_name='{}' and password = '{}'".format(user, pwd)
+    # sql = "SELECT * FROM user WHERE login_name={}".format(user)
+    sql = "SELECT * FROM user WHERE id=%s"#.format(user)
     print(sql)
-    count = cursor.execute(sql)
+    count = cursor.execute(sql, (id))
     # print(count)
 
     # rows = cursor.fetchone()
