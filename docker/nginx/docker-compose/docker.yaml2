@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  web1:
+    image: nginx:latest
+    expose:
+      - 80
+    ports:
+      - "8081:80"
+    container_name: nginx-web1
+    volumes:
+      - "/home/yinkai/Projects/docker_skills/nginx/web1/conf/:/etc/nginx/"
+      - "/home/yinkai/Projects/docker_skills/nginx/web1/logs/:/var/log/nginx/"
+      - "/home/yinkai/Projects/docker_skills/nginx/web1/html/:/usr/share/nginx/html/"
+    networks:
+      webnet:
+        aliases:
+          - "www"
+ 
+  web2:
+    image: nginx:latest
+    expose:
+      - 80
+    ports:
+      - "8082:80"
+    container_name: nginx-web2
+    volumes:
+      - "/home/yinkai/Projects/docker_skills/nginx/web2/conf/:/etc/nginx/"
+      - "/home/yinkai/Projects/docker_skills/nginx/web2/logs/:/var/log/nginx/"
+      - "/home/yinkai/Projects/docker_skills/nginx/web2/html/:/usr/share/nginx/html/"
+    networks:
+      webnet:
+        aliases:
+          - "www"
+networks:
+    webnet: {}
+
