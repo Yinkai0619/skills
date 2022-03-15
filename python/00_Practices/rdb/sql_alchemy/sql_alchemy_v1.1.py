@@ -17,11 +17,14 @@ DB = "test"
 USER = "pytest"
 PWD = "pytestpass"
 
-engine = create_engine('mysql+pymysql://{}:{}@{}:{}/{}'.format(USER, PWD, HOST, PORT, DB), echo=True)
+engine = create_engine(
+    'mysql+pymysql://{}:{}@{}:{}/{}'.format(USER, PWD, HOST, PORT, DB), echo=True)
 
 Base = declarative_base()   # 基类
 
 # Mapper
+
+
 class Student(Base):
     __tablename__ = 'student'   # 必须定义表名
     id = Column(Integer, primary_key=True, autoincrement=True)  # 字段定义，类属性
@@ -71,16 +74,13 @@ session = Session()     # session实例
 #     print(e)
 #     session.rollback()
 
-    
-
-
 
 # Update    先查才能后改
 # student = session.query(Student).get(2)     # select * from student where id = 2; get的查询对象是主键
 # print(student)
 
 # student.name = 'Nana'
-# student.age = 30
+# student.age = 31
 # try:
 #     session.add(student)
 #     session.commit()
@@ -100,13 +100,11 @@ session = Session()     # session实例
 #     session.rollback()
 
 
-
-
-# Delete 
+# Delete
 # s = session.query(Student).get(1)       # 先查后才能删除
 # try:
 #     session.delete(s)
-#     session.commit()      # delete 
+#     session.commit()      # delete
 # except Exception as e:
 #     print(e,"~~~~~~~~~")
 #     session.rollback()
@@ -119,17 +117,17 @@ session = Session()     # session实例
 #     session.rollback()
 
 
-
 # Select
 # students = session.query(Student)     # select * from student
 # for student in students:
 #     print(student)
-
+# student = session.query(Student).get(2)     # select * from student where id = 2;
+# print(student)
 
 
 # 查看状态
 def getstate(i, entity):
-    state:InstanceState = sqlalchemy.inspect(entity)
+    state: InstanceState = sqlalchemy.inspect(entity)
     state = "session_id={}, attached={}, transient={}, pending={}， persistent={}, deleted={}, detached={}".format(
         i, state.session_id, state._attached, state.transient, state.pending, state.persistent, state.deleted, state.detached
     )
@@ -164,26 +162,20 @@ def getstate(i, entity):
 #     session.rollback()
 #     getstate(8, tom)
 
-try:
-    s = session.query(Student).get(8)
-    getstate(9, s)
-    session.delete(s)
-    getstate(10, s)
-    session.flush()
-    getstate(11, s)
-    # session.commit()
-    getstate(12, s)
-except Exception as e:
-    print(e)
-    session.rollback()
-
-
-
+# try:
+#     s = session.query(Student).get(8)
+#     getstate(9, s)
+#     session.delete(s)
+#     getstate(10, s)
+#     session.flush()
+#     getstate(11, s)
+#     # session.commit()
+#     getstate(12, s)
+# except Exception as e:
+#     print(e)
+#     session.rollback()
 
 
 # ss = session.query(Student)
 # for s in ss:
 #     print(s)
-
-
-
