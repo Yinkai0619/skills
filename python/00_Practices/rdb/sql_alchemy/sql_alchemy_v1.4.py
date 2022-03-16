@@ -1,18 +1,18 @@
+import datetime
 import enum
 import os
 import random
 import string
-import datetime
 from ast import Str
 from operator import not_
 from re import I
 from sre_constants import IN
 from traceback import print_tb
 
-from sqlalchemy import (Column, Date, Enum, Integer, String, and_,
-                        create_engine, not_, or_, func, ForeignKey)
+from sqlalchemy import (Column, Date, Enum, ForeignKey, Integer, String, and_,
+                        create_engine, func, not_, or_)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.orm.state import InstanceState
 from sqlalchemy.sql.functions import concat
 from sqlalchemy.sql.sqltypes import CHAR, INTEGER, VARCHAR, Enum, SmallInteger
@@ -96,9 +96,11 @@ class Employee(Base):
     birth_date = Column(Date, nullable=False)
     hire_date = Column(Date, nullable=False)
 
+    departments = relationship('Dept_emp')
+
     def __repr__(self) -> str:
-        return "<{}: Employee no={} name='{} {}' brith={} gender={}>".format(
-            self.__class__.__tablename__, self.emp_no, self.first_name, self.last_name, self.birth_date, self.gender
+        return "<{}: Employee no={} name='{} {}' brith={} gender={} depts={}>".format(
+            self.__class__.__tablename__, self.emp_no, self.first_name, self.last_name, self.birth_date, self.gender, self.departments
         )
 # endregion
 
@@ -121,14 +123,18 @@ class Department(Base):
 class Dept_emp(Base):
     __tablename__ = 'dept_emp'
 
-    emp_no = Column(Integer, ForeignKey("employees.emp_no"), primary_key=True)
-    dept_no = Column(String(4), ForeignKey("department.dept_no"), primary_key=True)
+    emp_no = Column(Integer, ForeignKey("employees.emp_no", ondelete='CASCADE'), primary_key=True)
+    dept_no = Column(String(4), ForeignKey("department.dept_no", ondelete='CASCADE'), primary_key=True)
     from_date = Column(Date, nullable=False)
     to_date = Column(Date, nullable=False)
 
+    department = relationship('Department')
+
     def __repr__(self) -> str:
         # return super().__repr__()
-        return "<{}: eno={} dno={} from_date={} to_date={}>".format(self.__class__.__tablename__, self.emp_no, self.dept_no, self.from_date, self.to_date)
+        return "<{}: eno={} dno={} from_date={} to_date={} dept_name={}>".format(
+            self.__class__.__tablename__, self.emp_no, self.dept_no, self.from_date, self.to_date, self.department.dept_name
+            )
 # endregion
 
 
@@ -230,8 +236,8 @@ Base.metadata.create_all(bind=engine)
 # for employee in employees:
 #     print(employee)
 
-users = session.query(Dept_emp)   # SELECT * FROM user;
-showresults(users)
+# users = session.query(Dept_emp)   # SELECT * FROM user;
+# showresults(users)
 
 # print(get_randomdate('1980-01-01','1995-12-31'))
 
@@ -296,3 +302,21 @@ showresults(users)
 # print('ssssssssssssssssss',result.scalar())         # 在one中取第一项
 # print(result.all())
 # endregion
+
+
+
+# emp = session.query(Dept_emp).filter(Dept_emp.emp_no == '9')
+# emp = session.query(Employee, Dept_emp).filter(Employee.emp_no == Dept_emp.emp_no).filter(Employee.emp_no == 9)     # SELECT e.*, de.* from employees e , dept_emp de WHERE e.emp_no = de.emp_no AND e.emp_no = 9;
+# emp = session.query(Employee, Dept_emp).filter((Employee.emp_no == Dept_emp.emp_no) & (Employee.emp_no == 9))     # SELECT e.*, de.* from employees e , dept_emp de WHERE e.emp_no = de.emp_no AND e.emp_no = 9;
+# emp = session.query(Employee).join(Dept_emp).filter((Employee.emp_no == Dept_emp.emp_no) & (Employee.emp_no == 9))     # SELECT employees.* FROM employees INNER JOIN dept_emp ON employees.emp_no = dept_emp.emp_no WHERE employees.emp_no = dept_emp.emp_no AND employees.emp_no = 9;
+# emp = session.query(Employee).join(Dept_emp, Employee.emp_no == Dept_emp.emp_no).filter(Employee.emp_no == 9)     # 推荐！！ SELECT employees.* FROM employees INNER JOIN dept_emp ON employees.emp_no = dept_emp.emp_no WHERE employees.emp_no = 9; 
+# emp = session.query(Employee).join(Dept_emp, (Employee.emp_no == Dept_emp.emp_no) & (Employee.emp_no == 9))     # SELECT employees.* FROM employees INNER JOIN dept_emp ON employees.emp_no = dept_emp.emp_no AND employees.emp_no = 9;
+
+
+# emp = session.query(Employee, Dept_emp, Department).filter((Employee.emp_no == Dept_emp.emp_no) & (Dept_emp.dept_no == Department.dept_no) & (Employee.emp_no == '10'))     # SELECT employees.*, dept_emp.*, department.* FROM employees, dept_emp, department WHERE employees.emp_no = dept_emp.emp_no AND dept_emp.dept_no = department.dept_no AND employees.emp_no = 10
+# emp = session.query(Department.dept_name).filter((Employee.emp_no == Dept_emp.emp_no) & (Dept_emp.dept_no == Department.dept_no) & (Employee.emp_no == '10'))     # SELECT department.dept_name FROM department, employees, dept_emp WHERE employees.emp_no = dept_emp.emp_no AND dept_emp.dept_no = department.dept_no AND employees.emp_no = 10;
+
+# emp = session.query(Employee).join(Dept_emp, Employee.emp_no == Dept_emp.emp_no).filter(Employee.emp_no == 10)
+emp = session.query(Department.dept_name, Employee).join(Dept_emp, Employee.emp_no == Dept_emp.emp_no).join(Department, Dept_emp.dept_no == Department.dept_no).filter(Employee.emp_no == 10)       # SELECT	department.dept_name ,	employees.* FROM employees INNER JOIN dept_emp ON employees.emp_no = dept_emp.emp_no INNER JOIN department ON dept_emp.dept_no = department.dept_no WHERE employees.emp_no = 10;
+
+print(emp.all())
