@@ -21,6 +21,10 @@ function * counter() {
 } 
 const inc = counter()    //内层函数
 // console.log(typeof(inc))
-console.log(inc.next())
-console.log(inc.next().value)
-console.log(inc.next().value)
+// console.log(inc.next())
+// console.log(inc.next().value)
+// console.log(inc.next().value)
+
+for (let i of inc) {
+    console.log(i)
+}
