@@ -1,15 +1,18 @@
-let name = 'nana'
-let school = {
-    name: 'yinkai',
-    getNameFunc: function () {
-        console.log(this.name);
-        console.log(this);
-        return function() {
-            console.log(this === global);
-            return this.name;
-        }
-    }
+const obj = {
+    a:1,
+    b:2,
+    c:3
 }
 
-// console.log(school.getNameFunc()(school))
-console.log(school.getNameFunc().call(school))
+// var {a,b} = obj;
+// console.log(a)
+// console.log(b)
+
+// var {a,b,c,d} = obj;
+// console.log(a)
+// console.log(b)
+// console.log(c)
+// console.log(d)
+
+var {a:m,b:n,c,d:x=2000} = obj;
+console.log(m,n,x)
