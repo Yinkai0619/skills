@@ -6,10 +6,18 @@ FROM python:latest
 # LABEL maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>
 LABEL Maintainers="Yinkai <yinkai.li@foxmail.com>"
 
-RUN apt update && apt upgrade -y && apt-get autoremove; apt-get clean && \
-    apt install -y vim less net-tools iproute2 openssh-server
+# RUN apt update && apt upgrade -y && apt-get autoremove; apt-get clean && \
+#     apt install -y vim less net-tools iproute2 openssh-server
 
-RUN /usr/local/bin/python -m pip install --upgrade pip && \
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt-get clean && \
+    apt update && apt upgrade -y  && \
+    apt install -y vim less net-tools iproute2 openssh-server && \
+    apt-get autoremove && apt-get clean
+
+RUN pip config set global.index-url http://mirrors.aliyun.com/pypi/simple && \
+    pip config set install.trusted-host mirrors.aliyun.com && \
+    /usr/local/bin/python -m pip install --upgrade pip && \
     pip3 install ipython --no-cache-dir
 
 RUN echo "root:secret" | chpasswd
