@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 services:
   node:
     # image: "node:8"
@@ -11,5 +11,7 @@ services:
       - ./:/home/node/app
     expose:
       - "8081"
-    # command: "npm start"
-    command: "npm build"
+    command: "npm start"
+    # command: "npm build"
+    # command: "/bin/bash"
+    # command: "echo ${SHELL}"
