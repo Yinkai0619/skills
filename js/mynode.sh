@@ -2,7 +2,7 @@
 
 docker container run \
     --name mynode --hostname mynode \
-    -it \
+    -it -d \
     --rm \
     -P \
     -v "$PWD":/mydata -w /mydata \
